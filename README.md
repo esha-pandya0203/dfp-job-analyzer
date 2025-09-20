@@ -1,7 +1,7 @@
 # Job Market & Skills Analyzer
 
 ![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
-![License](https://img.shields.io/badge/License-MIT-green.svg)
+![License](https://img.shields.io/badge/License-CMU-blue.svg)
 ![Status](https://img.shields.io/badge/Status-Active-brightgreen.svg)
 
 ### Project Overview
@@ -299,14 +299,15 @@ We welcome community contributions! Please follow these steps:
 
 ### 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under Carnegie Mellon University (CMU) Academic License - see the [LICENSE](LICENSE) file for details.
 
 ### 👨‍💻 Development Team
 
-**Orange Team**
-- Project Lead: [Your Name]
+**Carnegie Mellon University - Orange Team**
+- Project Lead: Fan Yang
 - Main Developers: [Developer Names]
 - Data Scientists: [Data Scientist Names]
+- Institution: Carnegie Mellon University
 
 ### 📞 Contact
 
