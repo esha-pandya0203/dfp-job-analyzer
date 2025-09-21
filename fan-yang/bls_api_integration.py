@@ -4,11 +4,11 @@
 BLS (Bureau of Labor Statistics) API Integration
 ===============================================
 
-BLS劳工统计局API集成模块
-用于获取就业增长率、薪资统计等官方劳工数据
+BLS Bureau of Labor Statistics API integration module
+Used to fetch employment growth rates, salary statistics and other official labor data
 
-作者: Orange Team
-版本: 1.0
+Author: Orange Team
+Version: 1.0
 """
 
 import requests
@@ -22,14 +22,14 @@ logger = logging.getLogger(__name__)
 
 
 class BLSAPIClient:
-    """BLS API客户端"""
+    """BLS API client"""
     
     def __init__(self, api_key: Optional[str] = None):
         """
-        初始化BLS API客户端
+        Initialize BLS API client
         
         Args:
-            api_key: BLS API密钥 (可选，有密钥可以获得更高的请求限制)
+            api_key: BLS API key (optional, having a key provides higher request limits)
         """
         self.api_key = api_key
         self.base_url = "https://api.bls.gov/publicAPI/v2"
@@ -38,12 +38,12 @@ class BLSAPIClient:
             'User-Agent': 'Job-Market-Analyzer/1.0'
         }
         
-        # 请求限制
-        self.requests_per_second = 0.5  # 每秒最多0.5个请求
+        # Request rate limiting
+        self.requests_per_second = 0.5  # Maximum 0.5 requests per second
         self.last_request_time = 0
         
     def _rate_limit(self):
-        """实施请求频率限制"""
+        """Implement request rate limiting"""
         current_time = time.time()
         time_since_last = current_time - self.last_request_time
         min_interval = 1.0 / self.requests_per_second
@@ -58,19 +58,19 @@ class BLSAPIClient:
                           start_year: int = 2020, 
                           end_year: int = 2023) -> Dict[str, Any]:
         """
-        获取职业数据
+        Get occupation data
         
         Args:
-            occupation_codes: 职业代码列表
-            start_year: 开始年份
-            end_year: 结束年份
+            occupation_codes: List of occupation codes
+            start_year: Start year
+            end_year: End year
             
         Returns:
-            职业数据字典
+            Occupation data dictionary
         """
         self._rate_limit()
         
-        # 构建请求数据
+        # Build request data
         request_data = {
             "seriesid": occupation_codes,
             "startyear": str(start_year),
@@ -81,12 +81,12 @@ class BLSAPIClient:
             "aspects": True
         }
         
-        # 如果有API密钥，添加到请求中
+        # If API key is available, add it to the request
         if self.api_key:
             request_data["registrationkey"] = self.api_key
         
         try:
-            logger.info(f"请求BLS数据: {occupation_codes}")
+            logger.info(f"Requesting BLS data: {occupation_codes}")
             response = requests.post(
                 f"{self.base_url}/timeseries/data/",
                 headers=self.headers,
@@ -98,25 +98,25 @@ class BLSAPIClient:
             data = response.json()
             
             if data.get("status") == "REQUEST_SUCCEEDED":
-                logger.info("BLS数据请求成功")
+                logger.info("BLS data request successful")
                 return data
             else:
-                logger.error(f"BLS API错误: {data.get('message', 'Unknown error')}")
+                logger.error(f"BLS API error: {data.get('message', 'Unknown error')}")
                 return {}
                 
         except requests.exceptions.RequestException as e:
-            logger.error(f"BLS API请求失败: {e}")
+            logger.error(f"BLS API request failed: {e}")
             return {}
     
     def get_employment_data(self, occupation_codes: List[str]) -> pd.DataFrame:
         """
-        获取就业数据
+        Get employment data
         
         Args:
-            occupation_codes: 职业代码列表
+            occupation_codes: List of occupation codes
             
         Returns:
-            就业数据DataFrame
+            Employment data DataFrame
         """
         data = self.get_occupation_data(occupation_codes)
         
@@ -143,17 +143,17 @@ class BLSAPIClient:
     
     def get_salary_data(self, occupation_codes: List[str]) -> pd.DataFrame:
         """
-        获取薪资数据
+        Get salary data
         
         Args:
-            occupation_codes: 职业代码列表
+            occupation_codes: List of occupation codes
             
         Returns:
-            薪资数据DataFrame
+            Salary data DataFrame
         """
-        # 薪资数据通常使用不同的系列ID
-        # 这里需要根据具体的BLS数据系列进行调整
-        salary_codes = [code.replace("00", "01") for code in occupation_codes]  # 示例转换
+        # Salary data typically uses different series IDs
+        # This needs to be adjusted based on specific BLS data series
+        salary_codes = [code.replace("00", "01") for code in occupation_codes]  # Example conversion
         
         data = self.get_occupation_data(salary_codes)
         
@@ -180,16 +180,16 @@ class BLSAPIClient:
     
     def search_occupations(self, keyword: str) -> List[Dict[str, str]]:
         """
-        搜索职业
+        Search occupations
         
         Args:
-            keyword: 搜索关键词
+            keyword: Search keyword
             
         Returns:
-            匹配的职业列表
+            List of matching occupations
         """
-        # 这是一个简化的实现
-        # 实际的BLS API可能需要不同的端点
+        # This is a simplified implementation
+        # The actual BLS API may require different endpoints
         common_occupations = {
             "data scientist": ["15-2051.00"],
             "software developer": ["15-1252.00"],
@@ -211,21 +211,21 @@ class BLSAPIClient:
                 results.append({
                     "name": occupation,
                     "codes": codes,
-                    "description": f"BLS职业代码: {', '.join(codes)}"
+                    "description": f"BLS occupation codes: {', '.join(codes)}"
                 })
         
         return results
 
 
 class BLSAnalyzer:
-    """BLS数据分析器"""
+    """BLS data analyzer"""
     
     def __init__(self, api_key: Optional[str] = None):
         """
-        初始化BLS分析器
+        Initialize BLS analyzer
         
         Args:
-            api_key: BLS API密钥
+            api_key: BLS API key
         """
         self.client = BLSAPIClient(api_key)
         self.employment_data = pd.DataFrame()
@@ -233,22 +233,22 @@ class BLSAnalyzer:
     
     def analyze_occupation_trends(self, occupation_codes: List[str]) -> Dict[str, Any]:
         """
-        分析职业趋势
+        Analyze occupation trends
         
         Args:
-            occupation_codes: 职业代码列表
+            occupation_codes: List of occupation codes
             
         Returns:
-            趋势分析结果
+            Trend analysis results
         """
-        logger.info(f"分析职业趋势: {occupation_codes}")
+        logger.info(f"Analyzing occupation trends: {occupation_codes}")
         
-        # 获取就业数据
+        # Get employment data
         employment_df = self.client.get_employment_data(occupation_codes)
         salary_df = self.client.get_salary_data(occupation_codes)
         
         if employment_df.empty and salary_df.empty:
-            return {"error": "无法获取数据"}
+            return {"error": "Unable to fetch data"}
         
         results = {
             "occupation_codes": occupation_codes,
@@ -258,12 +258,12 @@ class BLSAnalyzer:
             "summary": {}
         }
         
-        # 分析就业趋势
+        # Analyze employment trends
         if not employment_df.empty:
             for occupation in employment_df["occupation"].unique():
                 occ_data = employment_df[employment_df["occupation"] == occupation]
                 if len(occ_data) >= 2:
-                    # 计算增长率
+                    # Calculate growth rate
                     first_year = occ_data["value"].iloc[0]
                     last_year = occ_data["value"].iloc[-1]
                     growth_rate = ((last_year - first_year) / first_year) * 100
@@ -273,12 +273,12 @@ class BLSAnalyzer:
                         "growth_rate": growth_rate
                     }
         
-        # 分析薪资趋势
+        # Analyze salary trends
         if not salary_df.empty:
             for occupation in salary_df["occupation"].unique():
                 occ_data = salary_df[salary_df["occupation"] == occupation]
                 if len(occ_data) >= 2:
-                    # 计算薪资增长率
+                    # Calculate salary growth rate
                     first_salary = occ_data["salary"].iloc[0]
                     last_salary = occ_data["salary"].iloc[-1]
                     salary_growth = ((last_salary - first_salary) / first_salary) * 100
@@ -288,20 +288,20 @@ class BLSAnalyzer:
                         "growth_rate": salary_growth
                     }
         
-        # 生成摘要
+        # Generate summary
         results["summary"] = self._generate_summary(results)
         
         return results
     
     def _generate_summary(self, analysis_results: Dict[str, Any]) -> Dict[str, Any]:
         """
-        生成分析摘要
+        Generate analysis summary
         
         Args:
-            analysis_results: 分析结果
+            analysis_results: Analysis results
             
         Returns:
-            摘要信息
+            Summary information
         """
         summary = {
             "total_occupations": len(analysis_results.get("occupation_codes", [])),
@@ -311,7 +311,7 @@ class BLSAnalyzer:
             "average_salary_growth": 0
         }
         
-        # 找出增长最快的职业
+        # Find fastest growing occupation
         employment_trends = analysis_results.get("employment_trends", {})
         if employment_trends:
             fastest_growing = max(
@@ -323,7 +323,7 @@ class BLSAnalyzer:
                 "growth_rate": fastest_growing[1]["growth_rate"]
             }
         
-        # 找出薪资最高的职业
+        # Find highest paid occupation
         salary_trends = analysis_results.get("salary_trends", {})
         if salary_trends:
             highest_paid = max(
@@ -339,17 +339,17 @@ class BLSAnalyzer:
     
     def get_market_insights(self, target_occupations: List[str]) -> Dict[str, Any]:
         """
-        获取市场洞察
+        Get market insights
         
         Args:
-            target_occupations: 目标职业列表
+            target_occupations: List of target occupations
             
         Returns:
-            市场洞察数据
+            Market insights data
         """
-        logger.info(f"获取市场洞察: {target_occupations}")
+        logger.info(f"Getting market insights: {target_occupations}")
         
-        # 搜索职业代码
+        # Search occupation codes
         occupation_codes = []
         for occupation in target_occupations:
             search_results = self.client.search_occupations(occupation)
@@ -357,12 +357,12 @@ class BLSAnalyzer:
                 occupation_codes.extend(result["codes"])
         
         if not occupation_codes:
-            return {"error": "未找到匹配的职业代码"}
+            return {"error": "No matching occupation codes found"}
         
-        # 分析趋势
+        # Analyze trends
         trends = self.analyze_occupation_trends(occupation_codes)
         
-        # 生成洞察
+        # Generate insights
         insights = {
             "target_occupations": target_occupations,
             "trends_analysis": trends,
@@ -374,13 +374,13 @@ class BLSAnalyzer:
     
     def _generate_recommendations(self, trends: Dict[str, Any]) -> List[str]:
         """
-        生成建议
+        Generate recommendations
         
         Args:
-            trends: 趋势分析结果
+            trends: Trend analysis results
             
         Returns:
-            建议列表
+            List of recommendations
         """
         recommendations = []
         
@@ -389,101 +389,101 @@ class BLSAnalyzer:
         if summary.get("fastest_growing"):
             fastest = summary["fastest_growing"]
             recommendations.append(
-                f"考虑进入 {fastest['occupation']} 领域，"
-                f"就业增长率为 {fastest['growth_rate']:.1f}%"
+                f"Consider entering the {fastest['occupation']} field, "
+                f"with employment growth rate of {fastest['growth_rate']:.1f}%"
             )
         
         if summary.get("highest_paid"):
             highest = summary["highest_paid"]
             recommendations.append(
-                f"{highest['occupation']} 提供最高薪资，"
-                f"平均薪资为 ${highest['salary']:,.0f}"
+                f"{highest['occupation']} offers the highest salary, "
+                f"with average salary of ${highest['salary']:,.0f}"
             )
         
         return recommendations
     
     def _assess_market_outlook(self, trends: Dict[str, Any]) -> str:
         """
-        评估市场前景
+        Assess market outlook
         
         Args:
-            trends: 趋势分析结果
+            trends: Trend analysis results
             
         Returns:
-            市场前景评估
+            Market outlook assessment
         """
         summary = trends.get("summary", {})
         avg_growth = summary.get("average_growth_rate", 0)
         
         if avg_growth > 5:
-            return "市场前景非常乐观，就业增长强劲"
+            return "Market outlook is very optimistic with strong employment growth"
         elif avg_growth > 2:
-            return "市场前景良好，就业稳步增长"
+            return "Market outlook is good with steady employment growth"
         elif avg_growth > 0:
-            return "市场前景稳定，就业略有增长"
+            return "Market outlook is stable with slight employment growth"
         else:
-            return "市场前景谨慎，就业增长缓慢"
+            return "Market outlook is cautious with slow employment growth"
 
 
 def main():
-    """主函数 - BLS API集成示例"""
+    """Main function - BLS API integration example"""
     print("=" * 60)
-    print("BLS API Integration - 劳工统计局API集成")
+    print("BLS API Integration - Bureau of Labor Statistics API Integration")
     print("=" * 60)
     
-    # 创建BLS分析器
+    # Create BLS analyzer
     analyzer = BLSAnalyzer()
     
     while True:
-        print("\n请选择操作:")
-        print("1. 搜索职业")
-        print("2. 分析职业趋势")
-        print("3. 获取市场洞察")
-        print("4. 退出")
+        print("\nPlease select an operation:")
+        print("1. Search occupations")
+        print("2. Analyze occupation trends")
+        print("3. Get market insights")
+        print("4. Exit")
         
-        choice = input("\n请输入选择 (1-4): ").strip()
+        choice = input("\nPlease enter your choice (1-4): ").strip()
         
         if choice == '1':
-            keyword = input("请输入职业关键词: ").strip()
+            keyword = input("Please enter occupation keyword: ").strip()
             if keyword:
                 results = analyzer.client.search_occupations(keyword)
                 if results:
-                    print(f"\n找到 {len(results)} 个匹配职业:")
+                    print(f"\nFound {len(results)} matching occupations:")
                     for result in results:
                         print(f"  - {result['name']}: {result['description']}")
                 else:
-                    print("没有找到匹配的职业")
+                    print("No matching occupations found")
         
         elif choice == '2':
-            occupation_codes = input("请输入职业代码 (用逗号分隔): ").strip().split(',')
+            occupation_codes = input("Please enter occupation codes (comma-separated): ").strip().split(',')
             occupation_codes = [code.strip() for code in occupation_codes if code.strip()]
             
             if occupation_codes:
                 trends = analyzer.analyze_occupation_trends(occupation_codes)
                 if "error" not in trends:
-                    print("\n职业趋势分析结果:")
+                    print("\nOccupation trend analysis results:")
                     print(json.dumps(trends, indent=2, ensure_ascii=False))
                 else:
-                    print(f"分析失败: {trends['error']}")
+                    print(f"Analysis failed: {trends['error']}")
         
         elif choice == '3':
-            occupations = input("请输入目标职业 (用逗号分隔): ").strip().split(',')
+            occupations = input("Please enter target occupations (comma-separated): ").strip().split(',')
             occupations = [occ.strip() for occ in occupations if occ.strip()]
             
             if occupations:
                 insights = analyzer.get_market_insights(occupations)
                 if "error" not in insights:
-                    print("\n市场洞察:")
+                    print("\nMarket insights:")
                     print(json.dumps(insights, indent=2, ensure_ascii=False))
                 else:
-                    print(f"获取洞察失败: {insights['error']}")
+                    print(f"Failed to get insights: {insights['error']}")
         
         elif choice == '4':
-            print("感谢使用BLS API集成!")
+            print("Thank you for using BLS API integration!")
             break
         
         else:
-            print("无效选择，请重新输入!")
+            print("Invalid choice, please try again!")
 
 
 if __name__ == "__main__":

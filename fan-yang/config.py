@@ -1,38 +1,38 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Job Market & Skills Analyzer - 配置文件
-====================================
+Job Market & Skills Analyzer - Configuration File
+===============================================
 
-包含所有配置选项和常量定义
+Contains all configuration options and constant definitions
 
-作者: Orange Team
-版本: 1.0
+Author: Orange Team
+Version: 1.0
 """
 
 import os
 from typing import Dict, List, Optional
 
-# 基础配置
+# Basic Configuration
 class Config:
-    """主配置类"""
+    """Main configuration class"""
     
-    # 项目信息
+    # Project Information
     PROJECT_NAME = "Job Market & Skills Analyzer"
     VERSION = "1.0"
     AUTHOR = "Orange Team"
     
-    # 数据源配置
+    # Data Source Configuration
     ONET_BASE_URL = "https://www.onetonline.org"
     BLS_API_BASE_URL = "https://api.bls.gov/publicAPI/v2"
     
-    # 爬虫配置
-    REQUEST_DELAY = 1  # 请求间隔（秒）
-    MAX_RETRIES = 3    # 最大重试次数
-    TIMEOUT = 10       # 请求超时时间（秒）
-    MAX_OCCUPATIONS = 100  # 默认最大职业数量
+    # Scraper Configuration
+    REQUEST_DELAY = 1  # Request interval (seconds)
+    MAX_RETRIES = 3    # Maximum retry attempts
+    TIMEOUT = 10       # Request timeout (seconds)
+    MAX_OCCUPATIONS = 100  # Default maximum number of occupations
     
-    # 请求头配置
+    # Request Headers Configuration
     DEFAULT_HEADERS = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
@@ -42,39 +42,39 @@ class Config:
         'Upgrade-Insecure-Requests': '1',
     }
     
-    # 技术技能关键词
+    # Technical Skills Keywords
     TECH_SKILLS = [
-        # 编程语言
+        # Programming Languages
         'Python', 'Java', 'JavaScript', 'C++', 'C#', 'R', 'MATLAB', 'Go', 'Rust', 'Swift',
         'Kotlin', 'Scala', 'PHP', 'Ruby', 'Perl', 'TypeScript', 'Dart',
         
-        # Web开发
+        # Web Development
         'HTML', 'CSS', 'React', 'Angular', 'Vue.js', 'Node.js', 'Django', 'Flask',
         'Spring', 'Express.js', 'Laravel', 'ASP.NET', 'jQuery', 'Bootstrap',
         
-        # 数据科学和机器学习
+        # Data Science and Machine Learning
         'TensorFlow', 'PyTorch', 'Scikit-learn', 'Pandas', 'NumPy', 'SciPy',
         'Apache Spark', 'Hadoop', 'Keras', 'OpenCV', 'NLTK', 'spaCy',
         
-        # 数据库
+        # Databases
         'SQL', 'MySQL', 'PostgreSQL', 'MongoDB', 'Redis', 'Elasticsearch',
         'Oracle', 'SQLite', 'Cassandra', 'Neo4j',
         
-        # 云计算和DevOps
+        # Cloud Computing and DevOps
         'AWS', 'Azure', 'Google Cloud', 'Docker', 'Kubernetes', 'Terraform',
         'Jenkins', 'GitLab CI', 'GitHub Actions', 'Ansible', 'Chef', 'Puppet',
         
-        # 工具和平台
+        # Tools and Platforms
         'Git', 'Linux', 'Windows', 'macOS', 'Tableau', 'Power BI', 'Excel',
         'Jupyter', 'Apache Kafka', 'RabbitMQ', 'Apache Airflow',
         
-        # 概念和框架
+        # Concepts and Frameworks
         'Machine Learning', 'Deep Learning', 'Data Science', 'Big Data',
         'Cloud Computing', 'DevOps', 'Agile', 'Scrum', 'Microservices',
         'REST API', 'GraphQL', 'Blockchain', 'IoT', 'Cybersecurity'
     ]
     
-    # 职业分类
+    # Occupation Categories
     OCCUPATION_CATEGORIES = {
         'data_science': ['data scientist', 'data analyst', 'data engineer', 'machine learning engineer'],
         'software_development': ['software developer', 'software engineer', 'full stack developer', 'backend developer'],
@@ -83,34 +83,34 @@ class Config:
         'cybersecurity': ['cybersecurity analyst', 'security engineer', 'penetration tester', 'security architect']
     }
     
-    # 文件路径配置
+    # File Path Configuration
     DATA_DIR = "data"
     OUTPUT_DIR = "output"
     LOG_DIR = "logs"
     
-    # 默认文件名
+    # Default File Names
     DEFAULT_DATA_FILE = "job_market_data.json"
     DEFAULT_SKILLS_FILE = "skills_analysis.csv"
     DEFAULT_REPORT_FILE = "analysis_report.html"
     
-    # 可视化配置
+    # Visualization Configuration
     CHART_COLORS = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', 
                    '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf']
     
     CHART_STYLE = 'seaborn-v0_8-whitegrid'
     FIGURE_SIZE = (12, 8)
     
-    # BLS API配置
-    BLS_RATE_LIMIT = 0.5  # 每秒请求数
+    # BLS API Configuration
+    BLS_RATE_LIMIT = 0.5  # Requests per second
     BLS_DEFAULT_YEARS = [2020, 2021, 2022, 2023]
     
-    # 日志配置
+    # Logging Configuration
     LOG_LEVEL = "INFO"
     LOG_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
     
     @classmethod
     def create_directories(cls):
-        """创建必要的目录"""
+        """Create necessary directories"""
         directories = [cls.DATA_DIR, cls.OUTPUT_DIR, cls.LOG_DIR]
         for directory in directories:
             os.makedirs(directory, exist_ok=True)
@@ -118,13 +118,13 @@ class Config:
     @classmethod
     def get_skill_category(cls, skill: str) -> Optional[str]:
         """
-        获取技能分类
+        Get skill category
         
         Args:
-            skill: 技能名称
+            skill: Skill name
             
         Returns:
-            技能分类或None
+            Skill category or None
         """
         skill_lower = skill.lower()
         
@@ -142,38 +142,38 @@ class Config:
             return 'other'
 
 
-# 环境特定配置
+# Environment-specific Configuration
 class DevelopmentConfig(Config):
-    """开发环境配置"""
+    """Development environment configuration"""
     DEBUG = True
     LOG_LEVEL = "DEBUG"
-    MAX_OCCUPATIONS = 20  # 开发时使用较少数据
+    MAX_OCCUPATIONS = 20  # Use less data during development
 
 
 class ProductionConfig(Config):
-    """生产环境配置"""
+    """Production environment configuration"""
     DEBUG = False
     LOG_LEVEL = "INFO"
-    MAX_OCCUPATIONS = 200  # 生产环境可以使用更多数据
+    MAX_OCCUPATIONS = 200  # Production environment can use more data
 
 
 class TestingConfig(Config):
-    """测试环境配置"""
+    """Testing environment configuration"""
     DEBUG = True
     LOG_LEVEL = "WARNING"
-    MAX_OCCUPATIONS = 5  # 测试时使用最少数据
+    MAX_OCCUPATIONS = 5  # Use minimal data for testing
 
 
-# 配置工厂
+# Configuration Factory
 def get_config(env: str = None) -> Config:
     """
-    获取配置对象
+    Get configuration object
     
     Args:
-        env: 环境名称 ('development', 'production', 'testing')
+        env: Environment name ('development', 'production', 'testing')
         
     Returns:
-        配置对象
+        Configuration object
     """
     if env is None:
         env = os.getenv('FLASK_ENV', 'development')
@@ -187,5 +187,5 @@ def get_config(env: str = None) -> Config:
     return config_map.get(env, DevelopmentConfig)
 
 
-# 默认配置实例
+# Default configuration instance
 config = get_config()
