@@ -3,6 +3,8 @@ import json
 import pandas as pd 
 import matplotlib.pyplot as plt
 from bs4 import BeautifulSoup
+import pdfplumber
+import re
 
 """
 API Pulls for data related to employment stats, wage stats in tech industry (information industry)
@@ -117,4 +119,79 @@ def web_scrape_bls_employment_projectsions():
 
 
 #fetch_bls_data(target_data, "2014", "2024")
-web_scrape_bls_employment_projectsions()
+#web_scrape_bls_employment_projectsions()
+
+
+
+def pittsburgh_computer_occupation_outlook():
+    """
+    Extract tables from a PDF and filter for computer-related occupations in Pittsburgh
+    """
+    pdf_path = "pghmsa_ltop.pdf"  # Replace with your PDF path
+
+    # Pattern to match SOC codes starting with 15-
+    soc_pattern = re.compile(r'^15-\d{4}')
+
+    matching_rows = []
+
+    with pdfplumber.open(pdf_path) as pdf:
+        for page in pdf.pages:
+            tables = page.extract_tables()
+            for table in tables:
+                # Convert to DataFrame
+                df = pd.DataFrame(table[1:], columns=table[0])
+
+                # Find the SOC column (case-insensitive match)
+                soc_col = next((col for col in df.columns if 'soc' in col.lower()), None)
+                if soc_col:
+                    # Filter rows where SOC code starts with '15-'
+                    filtered_df = df[df[soc_col].str.match(soc_pattern, na=False)]
+                    matching_rows.append(filtered_df)
+
+    # Combine all filtered tables
+    final_df = pd.concat(matching_rows, ignore_index=True)
+
+    # Display the result
+    print(final_df)
+
+    # Optionally, save to CSV
+    final_df.to_csv("pittsburgh_computer_occupation_outlook.csv", index=False)
+    return
+
+
+
+def pittsburgh_computer_wage_outlook():
+    """
+    Extract tables from a PDF and filter for computer-related occupations in Pittsburgh
+    """ 
+    pdf_path = "pghmsa_ow.pdf"  # Replace with your PDF path
+
+        # Pattern to match SOC codes starting with 15-
+    soc_pattern = re.compile(r'^15-\d{4}')
+
+    matching_rows = []
+
+    with pdfplumber.open(pdf_path) as pdf:
+        for page in pdf.pages:
+            tables = page.extract_tables()
+            #print(len(tables))
+            for table in tables:
+                columns = table[1]
+                big_row = table[2]
+                #print(big_row)
+                rows = big_row[0].split('\n')
+                for row in rows:
+                    #print(row) 
+                    if re.match(soc_pattern, row):
+                        print("Matched SOC code row:", row)
+                        matching_rows.append(row)
+        print(matching_rows)
+                # df = pd.DataFrame(table[1:], columns=table[0])
+        final_df = pd.DataFrame(matching_rows, columns=columns)
+        print(final_df)
+        final_df.to_csv("pittsburgh_computer_wage_outlook.csv", index=False)
+
+    return
+
+#pittsburgh_computer_occupation_outlook()
+pittsburgh_computer_wage_outlook()
