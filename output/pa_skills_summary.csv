@@ -1,0 +1,21 @@
+﻿skill_type,skill_name,frequency,percentage
+Technology,R,806,100.0
+Technology,Go,806,100.0
+Technology,Excel,700,86.848635235732
+Technology,AWS,642,79.65260545905707
+Technology,React,572,70.96774193548387
+Technology,Rust,410,50.86848635235732
+Technology,Perl,284,35.235732009925556
+Technology,SQL,161,19.975186104218363
+Technology,Git,125,15.508684863523573
+Technology,Linux,103,12.779156327543426
+Technology,Java,97,12.034739454094293
+Technology,MATLAB,88,10.918114143920596
+Technology,Python,71,8.808933002481389
+Technology,C++,67,8.312655086848634
+Technology,Tableau,66,8.188585607940446
+Technology,HTML,52,6.451612903225806
+Technology,C#,42,5.2109181141439205
+Technology,JavaScript,40,4.962779156327544
+Technology,Chef,36,4.466501240694789
+Technology,Cloud Computing,31,3.8461538461538463

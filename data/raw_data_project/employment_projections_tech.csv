@@ -1,0 +1,26 @@
+Occupation Title,Occupation Code,Occupation Type,2024 Employment,2024 Percent of Industry,2024 Percent of Occupation,Projected 2034 Employment,Projected 2034 Percent of Industry,Projected 2034 Percent of Occupation,"Employment Change, 2024-2034","Employment Percent Change, 2024-2034",Occupation Sort,Display Level
+Computer and mathematical occupations,15-0000,Summary,728.4,24.8,13.4,845.0,27.0,14.2,116.5,16.0,92,1
+Computer occupations,15-1200,Summary,694.1,23.6,13.9,797.2,25.4,14.7,103.1,14.8,93,2
+Computer and information analysts,15-1210,Summary,52.9,1.8,7.5,63.6,2.0,7.9,10.6,20.1,94,3
+Computer systems analysts,15-1211,Line Item,36.1,1.2,6.9,41.1,1.3,7.3,5.0,13.9,95,4
+Information security analysts,15-1212,Line Item,16.8,0.6,9.2,22.4,0.7,9.5,5.6,33.6,96,4
+Computer and information research scientists,15-1221,Line Item,4.3,0.1,10.6,5.6,0.2,11.7,1.4,31.9,97,3
+Computer support specialists,15-1230,Summary,89.7,3.0,10.2,90.6,2.9,10.6,0.9,1.0,98,3
+Computer network support specialists,15-1231,Line Item,22.8,0.8,14.9,22.6,0.7,14.5,-0.2,-0.7,99,4
+Computer user support specialists,15-1232,Line Item,66.9,2.3,9.2,68.0,2.2,9.7,1.1,1.6,100,4
+Database and network administrators and architects,15-1240,Summary,74.8,2.5,11.4,78.7,2.5,11.8,3.9,5.3,101,3
+Computer network architects,15-1241,Line Item,32.5,1.1,18.2,34.7,1.1,17.3,2.1,6.5,102,4
+Database administrators,15-1242,Line Item,6.8,0.2,8.7,7.3,0.2,9.5,0.6,8.2,103,4
+Database architects,15-1243,Line Item,8.5,0.3,12.8,9.7,0.3,13.4,1.2,14.0,104,4
+Network and computer systems administrators,15-1244,Line Item,26.9,0.9,8.1,27.0,0.9,8.5,0.1,0.2,105,4
+"Software and web developers, programmers, and testers",15-1250,Summary,429.2,14.6,19.2,510.6,16.3,20.2,81.4,19.0,106,3
+Computer programmers,15-1251,Line Item,10.2,0.3,8.4,10.7,0.3,9.4,0.5,5.0,107,4
+Software developers,15-1252,Line Item,333.3,11.3,19.7,402.3,12.8,20.5,69.1,20.7,108,4
+Software quality assurance analysts and testers,15-1253,Line Item,38.8,1.3,19.2,44.6,1.4,20.1,5.8,14.8,109,4
+Web developers,15-1254,Line Item,12.0,0.4,14.0,13.6,0.4,14.7,1.6,12.9,110,4
+Web and digital interface designers,15-1255,Line Item,34.9,1.2,27.1,39.4,1.3,28.6,4.5,12.9,111,4
+"Computer occupations, all other",15-1299,Line Item,43.2,1.5,9.2,48.0,1.5,9.4,4.8,11.1,112,3
+Mathematical science occupations,15-2000,Summary,34.3,1.2,8.0,47.8,1.5,8.7,13.5,39.2,113,2
+Operations research analysts,15-2031,Line Item,6.2,0.2,5.5,7.9,0.3,5.8,1.7,28.0,116,3
+Statisticians,15-2041,Line Item,0.8,0.0,2.3,0.9,0.0,2.6,0.1,18.2,117,3
+Data scientists,15-2051,Line Item,27.0,0.9,11.0,38.5,1.2,11.7,11.5,42.6,118,3

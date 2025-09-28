@@ -1,0 +1,101 @@
+Job_title,Company,Salary_min,Salary_max,Skills_list,Location,Redirect_link,Apply_url,Experience_level
+Penetration Tester,Stripe,150219,194002,"['GitLab CI', 'React', 'Docker', 'SVN']","New York, NY",https://example.com/job/1,https://example.com/apply/1,Lead
+Python Developer,Snowflake,159552,197482,"['Kanban', 'Matplotlib', 'CI/CD', 'Cybersecurity', 'Angular', 'SVN', 'Plotly']","Philadelphia, PA",https://example.com/job/2,https://example.com/apply/2,Lead
+Data Analyst,Stripe,126676,154079,"['Redis', 'Kanban', 'AWS', 'MongoDB']","Portland, OR",https://example.com/job/3,https://example.com/apply/3,Senior Level
+Information Security Engineer,Twilio,109461,119798,"['JavaScript', 'Machine Learning', 'Cybersecurity', 'Azure', 'MongoDB', 'Network Security', 'PHP']","Austin, TX",https://example.com/job/4,https://example.com/apply/4,Mid Level
+Software Tester,Kubernetes,158902,192400,"['PostgreSQL', 'TypeScript', 'ASP.NET', 'gRPC']","Denver, CO",https://example.com/job/5,https://example.com/apply/5,Lead
+Network Engineer,Slack,107657,118327,"['Docker', 'Agile', 'Deep Learning', 'AWS', 'Splunk', 'GitLab CI', 'C++', 'Windows']","Baltimore, MD",https://example.com/job/6,https://example.com/apply/6,Mid Level
+Business Intelligence Analyst,Adobe,164660,188493,"['BDD', 'React', 'Python', 'Vulnerability Assessment', 'Git']","Atlanta, GA",https://example.com/job/7,https://example.com/apply/7,Lead
+Azure Engineer,Uber,208486,241951,"['TypeScript', 'SQL', 'GitHub Actions', 'GraphQL']",Hybrid,https://example.com/job/8,https://example.com/apply/8,Principal
+Data Engineer,Adobe,84409,103600,"['Grafana', 'Microservices', 'Django', 'Tableau', 'React', 'PHP']","Phoenix, AZ",https://example.com/job/9,https://example.com/apply/9,Mid Level
+Data Architect,SpaceX,214143,234931,"['Redis', 'Plotly', 'SVN', 'PostgreSQL', 'NumPy']","New York, NY",https://example.com/job/10,https://example.com/apply/10,Principal
+Data Engineer,Splunk,239029,249909,"['CI/CD', 'BDD', 'Node.js', 'JavaScript', 'Flask']","Salt Lake City, UT",https://example.com/job/11,https://example.com/apply/11,Principal
+Python Developer,Meta,220774,236638,"['Docker', 'Microservices', 'PostgreSQL', 'C++', 'DevSecOps', 'Angular']","Austin, TX",https://example.com/job/12,https://example.com/apply/12,Principal
+System Administrator,Stripe,150074,162186,"['Cloud Security', 'Power BI', 'C#', 'C++', 'Vue.js']","Phoenix, AZ",https://example.com/job/13,https://example.com/apply/13,Lead
+DevOps Engineer,Tesla,212457,234324,"['TDD', 'Cloud Security', 'Agile', 'Azure']","Atlanta, GA",https://example.com/job/14,https://example.com/apply/14,Principal
+Data Architect,Meta,113428,146992,"['Penetration Testing', 'ASP.NET', 'Chef', 'Redis', 'SQL', 'Jenkins', 'PostgreSQL']",Remote,https://example.com/job/15,https://example.com/apply/15,Senior Level
+Cloud Engineer,IBM,215351,237591,"['Power BI', 'Puppet', 'Kanban', 'Laravel', 'PostgreSQL', 'DevOps', 'Machine Learning', 'Java']","Washington, DC",https://example.com/job/16,https://example.com/apply/16,Principal
+Full Stack Developer,GitLab,85183,119253,"['React', 'MongoDB', 'PHP', 'Flask', 'Windows', 'Git', 'Penetration Testing', 'MySQL']",Remote,https://example.com/job/17,https://example.com/apply/17,Mid Level
+QA Engineer,Microsoft,60013,71716,"['Machine Learning', 'Splunk', 'C#', 'TDD', 'Matplotlib', 'PHP', 'Go']","San Francisco, CA",https://example.com/job/18,https://example.com/apply/18,Entry Level
+DevOps Engineer,GitLab,133168,158184,"['DevOps', 'Scrum', 'Laravel', 'Mercurial', 'Docker']","Nashville, TN",https://example.com/job/19,https://example.com/apply/19,Senior Level
+Cloud Solutions Engineer,Airbnb,111591,130623,"['C++', 'Jenkins', 'Redis', 'Ruby on Rails', 'Laravel']","Salt Lake City, UT",https://example.com/job/20,https://example.com/apply/20,Senior Level
+QA Engineer,Zoom,74137,85459,"['SOA', 'AWS', 'Kubernetes', 'Spring Boot', 'PyTorch', 'Matplotlib']",Remote,https://example.com/job/21,https://example.com/apply/21,Entry Level
+Azure Engineer,Atlassian,229488,245245,"['Scikit-learn', 'Express', 'ASP.NET', 'Django', 'React', 'Node.js', 'SVN']","Denver, CO",https://example.com/job/22,https://example.com/apply/22,Principal
+Analytics Engineer,Snowflake,177176,194071,"['Windows', 'PHP', 'Machine Learning', 'GitHub Actions', 'Ruby on Rails', 'Penetration Testing', 'Terraform']","Houston, TX",https://example.com/job/23,https://example.com/apply/23,Lead
+Network Engineer,Tableau,137625,153904,"['WebSocket', 'GraphQL', 'AWS', 'GitHub Actions', 'Vulnerability Assessment', 'Machine Learning']","Denver, CO",https://example.com/job/24,https://example.com/apply/24,Senior Level
+Cloud Engineer,GitLab,129317,139612,"['Kanban', 'Puppet', 'Tableau', 'Network Security']","Philadelphia, PA",https://example.com/job/25,https://example.com/apply/25,Senior Level
+Backend Developer,Amazon,75560,89759,"['Looker', 'Grafana', 'DevOps', 'MongoDB', 'TDD']",Remote,https://example.com/job/26,https://example.com/apply/26,Entry Level
+Big Data Engineer,Intel,83309,116223,"['Python', 'MySQL', 'MongoDB', 'Django', 'D3.js']","Austin, TX",https://example.com/job/27,https://example.com/apply/27,Mid Level
+Business Intelligence Analyst,Salesforce,143581,155619,"['Node.js', 'Puppet', 'Terraform', 'Python', 'Application Security', 'Tableau']","Boston, MA",https://example.com/job/28,https://example.com/apply/28,Senior Level
+AWS Engineer,Slack,173027,192450,"['CI/CD', 'JavaScript', 'Elasticsearch', 'Application Security', 'Splunk', 'Node.js', 'TypeScript', 'Docker']","Portland, OR",https://example.com/job/29,https://example.com/apply/29,Lead
+System Administrator,Meta,104840,115998,"['React', 'Ansible', 'Chef', 'Scrum', 'GitLab CI', 'Puppet']","Nashville, TN",https://example.com/job/30,https://example.com/apply/30,Mid Level
+Software Tester,Square,180436,198147,"['Machine Learning', 'Azure', 'GitLab CI', 'Cybersecurity', 'SVN', 'Power BI', 'Penetration Testing']","Phoenix, AZ",https://example.com/job/31,https://example.com/apply/31,Lead
+Technical Product Manager,Airbnb,122360,157379,"['Tableau', 'Vue.js', 'Elasticsearch', 'Java']","Austin, TX",https://example.com/job/32,https://example.com/apply/32,Senior Level
+System Administrator,New Relic,99389,114097,"['Django', 'Ruby on Rails', 'Google Cloud', 'GitHub Actions', 'TDD', 'Tableau', 'gRPC', 'Deep Learning']","Austin, TX",https://example.com/job/33,https://example.com/apply/33,Mid Level
+Cloud Solutions Engineer,Apple,153149,188051,"['Puppet', 'Ruby on Rails', 'Plotly', 'Jenkins', 'React', 'Rust', 'MySQL']","Washington, DC",https://example.com/job/34,https://example.com/apply/34,Lead
+Full Stack Developer,Docker,147036,159520,"['GitLab CI', 'Scrum', 'GitHub Actions', 'JavaScript', 'Vulnerability Assessment']","Portland, OR",https://example.com/job/35,https://example.com/apply/35,Senior Level
+Software Tester,Amazon,203730,246940,"['REST API', 'WebSocket', 'Kibana', 'Looker', 'NumPy', 'macOS', 'Kubernetes', 'Jenkins']","San Diego, CA",https://example.com/job/36,https://example.com/apply/36,Principal
+IT Support Specialist,PayPal,192514,241259,"['PyTorch', 'Redis', 'Mercurial', 'C++', 'GitHub Actions', 'Django', 'BDD', 'Express']","Chicago, IL",https://example.com/job/37,https://example.com/apply/37,Principal
+QA Engineer,Meta,127775,140070,"['Flask', 'CI/CD', 'Docker', 'Python']","Philadelphia, PA",https://example.com/job/38,https://example.com/apply/38,Senior Level
+Technical Product Manager,Salesforce,108931,119171,"['WebSocket', 'Django', 'Python', 'REST API']","San Francisco, CA",https://example.com/job/39,https://example.com/apply/39,Mid Level
+Angular Developer,NVIDIA,82668,100742,"['Mercurial', 'ASP.NET', 'Node.js', 'Pandas', 'Deep Learning', 'Power BI', 'GitLab CI']",Hybrid,https://example.com/job/40,https://example.com/apply/40,Mid Level
+Angular Developer,Salesforce,67700,78981,"['Kubernetes', 'Jenkins', 'Spring Boot', 'WebSocket']","Detroit, MI",https://example.com/job/41,https://example.com/apply/41,Entry Level
+Java Developer,PowerBI,194988,210119,"['Machine Learning', 'Application Security', 'Plotly', 'Angular', 'GitLab CI', 'Chef', 'WebSocket']","Atlanta, GA",https://example.com/job/42,https://example.com/apply/42,Principal
+Penetration Tester,HashiCorp,209403,225171,"['Chef', 'Terraform', 'Scikit-learn', 'Power BI']","Chicago, IL",https://example.com/job/43,https://example.com/apply/43,Principal
+Technical Product Manager,PowerBI,177579,189710,"['PostgreSQL', 'Microservices', 'Elasticsearch']","San Francisco, CA",https://example.com/job/44,https://example.com/apply/44,Lead
+Cloud Solutions Engineer,Meta,158398,197687,"['Redis', 'Seaborn', 'Linux', 'Go', 'C#', 'WebSocket', 'SVN']",Remote,https://example.com/job/45,https://example.com/apply/45,Lead
+AI/ML Engineer,HashiCorp,143743,157091,"['Tableau', 'Redis', 'Looker', 'PyTorch', 'NumPy', 'DevSecOps']","San Diego, CA",https://example.com/job/46,https://example.com/apply/46,Senior Level
+Data Scientist,Kubernetes,137344,157629,"['Go', 'Penetration Testing', 'SOA', 'Grafana', 'Vulnerability Assessment']","New York, NY",https://example.com/job/47,https://example.com/apply/47,Senior Level
+Node.js Developer,Salesforce,188773,199697,"['Terraform', 'PyTorch', 'Go', 'SVN', 'Puppet', 'MySQL', 'Microservices', 'Penetration Testing']","Houston, TX",https://example.com/job/48,https://example.com/apply/48,Lead
+C# Developer,Cisco,170473,181477,"['MongoDB', 'Splunk', 'PyTorch', 'Agile', 'Grafana', 'AWS']","New York, NY",https://example.com/job/49,https://example.com/apply/49,Lead
+Data Engineer,PayPal,62840,84887,"['Ruby on Rails', 'Google Cloud', 'Express', 'Cloud Security', 'Python', 'Java', 'Puppet']","Austin, TX",https://example.com/job/50,https://example.com/apply/50,Entry Level
+Analytics Engineer,Databricks,158096,184775,"['Ansible', 'macOS', 'SVN', 'Elasticsearch', 'GitLab CI', 'Penetration Testing', 'TensorFlow']",Remote,https://example.com/job/51,https://example.com/apply/51,Lead
+Security Consultant,Salesforce,143579,159616,"['Laravel', 'Terraform', 'Git', 'Agile', 'WebSocket']","Los Angeles, CA",https://example.com/job/52,https://example.com/apply/52,Senior Level
+Full Stack Developer,Apple,140594,174295,"['WebSocket', 'Kubernetes', 'SVN', 'AWS']","Washington, DC",https://example.com/job/53,https://example.com/apply/53,Lead
+Mobile Developer,Microsoft,144336,194601,"['REST API', 'Django', 'Looker', 'Linux', 'Node.js', 'DevSecOps', 'AWS']","Denver, CO",https://example.com/job/54,https://example.com/apply/54,Lead
+AWS Engineer,PayPal,220673,231276,"['Kibana', 'NumPy', 'Java']","Atlanta, GA",https://example.com/job/55,https://example.com/apply/55,Principal
+Cloud Solutions Engineer,PayPal,105078,119096,"['Terraform', 'Application Security', 'MySQL']","Portland, OR",https://example.com/job/56,https://example.com/apply/56,Mid Level
+Ethical Hacker,Netflix,206688,228578,"['Spring Boot', 'Looker', 'PHP', 'C#', 'Windows', 'Kubernetes', 'Tableau', 'Kibana']","Houston, TX",https://example.com/job/57,https://example.com/apply/57,Principal
+Data Architect,Oracle,99664,113584,"['JavaScript', 'Pandas', 'NumPy', 'Node.js']","San Diego, CA",https://example.com/job/58,https://example.com/apply/58,Mid Level
+AWS Engineer,GitLab,93778,113865,"['Jenkins', 'Application Security', 'Python', 'Plotly', 'PostgreSQL', 'SVN']","San Diego, CA",https://example.com/job/59,https://example.com/apply/59,Mid Level
+Big Data Engineer,PowerBI,60106,83830,"['Express', 'Machine Learning', 'DevSecOps', 'Elasticsearch', 'TensorFlow', 'WebSocket', 'PostgreSQL', 'MongoDB']","Detroit, MI",https://example.com/job/60,https://example.com/apply/60,Entry Level
+Cloud Solutions Engineer,Apple,237593,249862,"['Redis', 'Network Security', 'Looker']","Salt Lake City, UT",https://example.com/job/61,https://example.com/apply/61,Principal
+AI/ML Engineer,Docker,158806,179987,"['D3.js', 'Scikit-learn', 'GitLab CI']","Houston, TX",https://example.com/job/62,https://example.com/apply/62,Lead
+Frontend Developer,Tableau,75916,87719,"['MySQL', 'Application Security', 'Pandas', 'Scrum', 'D3.js']","Detroit, MI",https://example.com/job/63,https://example.com/apply/63,Entry Level
+Frontend Developer,Microsoft,222826,237859,"['Node.js', 'Elasticsearch', 'MongoDB', 'Vulnerability Assessment', 'Cloud Security', 'SVN', 'Spring Boot']","Dallas, TX",https://example.com/job/64,https://example.com/apply/64,Principal
+React Developer,Elastic,182853,238021,"['PHP', 'SQL', 'Go', 'D3.js', 'Looker', 'Agile']","Boston, MA",https://example.com/job/65,https://example.com/apply/65,Principal
+Java Developer,Adobe,60139,86671,"['Microservices', 'Cybersecurity', 'PostgreSQL', 'Tableau', 'Seaborn', 'TypeScript']","San Diego, CA",https://example.com/job/66,https://example.com/apply/66,Entry Level
+IT Support Specialist,Elastic,144205,159147,"['Cloud Security', 'Matplotlib', 'Scrum']","San Francisco, CA",https://example.com/job/67,https://example.com/apply/67,Senior Level
+Frontend Developer,IBM,71469,83986,"['Elasticsearch', 'Power BI', 'Kibana', 'SOA', 'Rust', 'Google Cloud']","Chicago, IL",https://example.com/job/68,https://example.com/apply/68,Entry Level
+DevOps Engineer,Tesla,110685,152357,"['Kubernetes', 'Windows', 'Ansible', 'Grafana', 'Power BI']","Portland, OR",https://example.com/job/69,https://example.com/apply/69,Senior Level
+Google Cloud Engineer,Microsoft,85012,115602,"['Power BI', 'Puppet', 'Vue.js', 'Rust', 'Deep Learning', 'Go']","Minneapolis, MN",https://example.com/job/70,https://example.com/apply/70,Mid Level
+IT Support Specialist,NVIDIA,187717,199672,"['Splunk', 'SOA', 'Chef', 'TensorFlow', 'TypeScript', 'Angular']","Denver, CO",https://example.com/job/71,https://example.com/apply/71,Lead
+Data Scientist,Red Hat,77498,88804,"['ASP.NET', 'Redis', 'Terraform', 'Java', 'Azure', 'Machine Learning']","Nashville, TN",https://example.com/job/72,https://example.com/apply/72,Entry Level
+Technical Product Manager,Zoom,61862,80805,"['REST API', 'Ansible', 'Scrum', 'Penetration Testing', 'Matplotlib', 'Pandas', 'Puppet']","Salt Lake City, UT",https://example.com/job/73,https://example.com/apply/73,Entry Level
+Frontend Developer,PayPal,120046,134754,"['Cloud Security', 'Django', 'DevOps', 'Splunk', 'Plotly']","San Diego, CA",https://example.com/job/74,https://example.com/apply/74,Senior Level
+DevOps Engineer,Kubernetes,147290,159584,"['Vue.js', 'SOA', 'ASP.NET', 'Penetration Testing', 'C++']","Houston, TX",https://example.com/job/75,https://example.com/apply/75,Senior Level
+Python Developer,New Relic,117361,150185,"['Mercurial', 'Docker', 'Scrum', 'C#', 'Vue.js', 'D3.js']","Phoenix, AZ",https://example.com/job/76,https://example.com/apply/76,Senior Level
+React Developer,Splunk,134101,159803,"['WebSocket', 'Ruby on Rails', 'Java', 'PHP', 'Vulnerability Assessment']","Austin, TX",https://example.com/job/77,https://example.com/apply/77,Senior Level
+Google Cloud Engineer,Palantir,96578,116409,"['Git', 'TypeScript', 'GitLab CI', 'Agile', 'BDD', 'Pandas', 'REST API']","Philadelphia, PA",https://example.com/job/78,https://example.com/apply/78,Mid Level
+Software Developer,New Relic,132683,159978,"['Cybersecurity', 'NumPy', 'CI/CD']","Philadelphia, PA",https://example.com/job/79,https://example.com/apply/79,Senior Level
+C# Developer,Tableau,110262,123465,"['Plotly', 'SQL', 'GitLab CI', 'Python']","Detroit, MI",https://example.com/job/80,https://example.com/apply/80,Senior Level
+Mobile Developer,Google,96161,115809,"['Flask', 'Seaborn', 'REST API', 'SVN', 'Kanban', 'C++']","San Diego, CA",https://example.com/job/81,https://example.com/apply/81,Mid Level
+Database Administrator,GitHub,131103,155216,"['Redis', 'Linux', 'Looker', 'Git', 'Machine Learning', 'Cybersecurity', 'Tableau']","Portland, OR",https://example.com/job/82,https://example.com/apply/82,Senior Level
+Frontend Developer,Meta,105923,117703,"['Kibana', 'AWS', 'Microservices', 'Flask', 'Matplotlib', 'Express']","Boston, MA",https://example.com/job/83,https://example.com/apply/83,Mid Level
+IT Support Specialist,Meta,87319,103659,"['GitLab CI', 'Kubernetes', 'Linux', 'Scikit-learn', 'Elasticsearch', 'GitHub Actions']","Pittsburgh, PA",https://example.com/job/84,https://example.com/apply/84,Mid Level
+Frontend Developer,Docker,133627,149743,"['Python', 'Scrum', 'Kubernetes', 'macOS', 'Kanban', 'C#']","Austin, TX",https://example.com/job/85,https://example.com/apply/85,Senior Level
+Software Developer,PowerBI,199252,224718,"['GraphQL', 'Git', 'Network Security', 'SVN']","Minneapolis, MN",https://example.com/job/86,https://example.com/apply/86,Principal
+Security Consultant,Apple,158055,190044,"['BDD', 'React', 'Java', 'ASP.NET', 'AWS', 'Deep Learning', 'C++', 'DevOps']","Salt Lake City, UT",https://example.com/job/87,https://example.com/apply/87,Lead
+AWS Engineer,Uber,65167,86648,"['Splunk', 'REST API', 'Elasticsearch', 'Kanban', 'Kibana', 'TensorFlow', 'macOS', 'Network Security']","Pittsburgh, PA",https://example.com/job/88,https://example.com/apply/88,Entry Level
+Angular Developer,Palantir,68476,79728,"['Go', 'Mercurial', 'GraphQL', 'DevSecOps']","Miami, FL",https://example.com/job/89,https://example.com/apply/89,Entry Level
+Technical Product Manager,Red Hat,146751,157995,"['gRPC', 'D3.js', 'Terraform']","Philadelphia, PA",https://example.com/job/90,https://example.com/apply/90,Senior Level
+Azure Engineer,Slack,124268,152082,"['C#', 'Grafana', 'gRPC', 'Elasticsearch', 'ASP.NET', 'TensorFlow', 'TypeScript']","Pittsburgh, PA",https://example.com/job/91,https://example.com/apply/91,Senior Level
+QA Engineer,VMware,66235,76725,"['Elasticsearch', 'Matplotlib', 'Vulnerability Assessment', 'Deep Learning']","Detroit, MI",https://example.com/job/92,https://example.com/apply/92,Entry Level
+DevOps Engineer,Zoom,128563,151497,"['D3.js', 'Network Security', 'Jenkins']","Houston, TX",https://example.com/job/93,https://example.com/apply/93,Senior Level
+Data Scientist,Slack,154083,171541,"['Ansible', 'SOA', 'Puppet', 'Rust', 'Pandas', 'AWS', 'Cloud Security']","Denver, CO",https://example.com/job/94,https://example.com/apply/94,Lead
+Backend Developer,Netflix,106894,119336,"['Cloud Security', 'MongoDB', 'C#']","Houston, TX",https://example.com/job/95,https://example.com/apply/95,Mid Level
+DevOps Engineer,Palantir,117250,142220,"['Vue.js', 'TensorFlow', 'Grafana', 'PyTorch']","Portland, OR",https://example.com/job/96,https://example.com/apply/96,Senior Level
+Database Administrator,Microsoft,64870,76390,"['NumPy', 'SQL', 'Go']","Los Angeles, CA",https://example.com/job/97,https://example.com/apply/97,Entry Level
+AI/ML Engineer,Zoom,157342,167457,"['Matplotlib', 'JavaScript', 'Vulnerability Assessment']","Miami, FL",https://example.com/job/98,https://example.com/apply/98,Lead
+QA Engineer,Red Hat,142383,159935,"['Azure', 'Kanban', 'Go', 'DevSecOps', 'REST API', 'Pandas', 'BDD', 'AWS']",Hybrid,https://example.com/job/99,https://example.com/apply/99,Lead
+DevOps Engineer,GitHub,209430,221966,"['Splunk', 'Scikit-learn', 'Vue.js', 'Cybersecurity', 'Microservices', 'Penetration Testing', 'Kubernetes', 'macOS']",Remote,https://example.com/job/100,https://example.com/apply/100,Principal

@@ -1,0 +1,25 @@
+{
+  "project_name": "Pennsylvania Employment Data Analysis",
+  "author": "Fan Yang (CMU)",
+  "date": "2025-09-27 21:35:11",
+  "components": {
+    "data_scraping": "O*NET Pennsylvania occupation data",
+    "bls_integration": "Bureau of Labor Statistics API",
+    "google_sheets": "Job listings from Google Sheets",
+    "analysis": "Comprehensive data analysis",
+    "visualization": "Streamlit dashboard"
+  },
+  "data_sources": [
+    "O*NET Online (https://www.onetonline.org/)",
+    "Bureau of Labor Statistics API",
+    "Google Sheets job listings",
+    "Pennsylvania-specific employment data"
+  ],
+  "outputs": [
+    "Pennsylvania occupation dataset",
+    "Skills analysis and trends",
+    "Salary analysis and projections",
+    "Interactive Streamlit dashboard",
+    "Integrated job market insights"
+  ]
+}
