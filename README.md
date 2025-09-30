@@ -1,4 +1,4 @@
-# Pennsylvania Employment Dashboard
+# US Employment Dashboard
 
 A comprehensive web scraping and data analysis project for Pennsylvania employment data, featuring an interactive Streamlit dashboard.
 
