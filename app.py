@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt 
 import seaborn as sns 
 from modules.nav import navbar 
+from utils.bls_data_scraper import fetch_bls_data, web_scrape_bls_employment_projections, pittsburgh_computer_occupation_outlook, pittsburgh_computer_wage_outlook
 
 st.set_page_config(page_title='Job Market Dashboard', page_icon='📊', layout='wide')
 st.title('Job Analyzer') 
@@ -14,7 +15,12 @@ def main():
     #webscrape all the data only the relevants ones reference bls_data dict 
     #store csv files in data/raw_data
 
-    #populate application dashboards 
+    #BLS DATA SCRAPE/API REQUESTS 
+    fetch_bls_data()
+    web_scrape_bls_employment_projections()
+    pittsburgh_computer_occupation_outlook()
+    pittsburgh_computer_wage_outlook()
+
 
     #navbar (need to add Overview and Job Search)
     navbar(); 
