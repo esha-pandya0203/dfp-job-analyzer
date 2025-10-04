@@ -18,8 +18,6 @@ API_KEY = "fb82158c02e24ee0ac0f39a32ccf3dc2"
 def fetch_bls_data():
     headers = {'Content-type': 'application/json'}
     series_id = {
-     "OEUN000000051--5215121003": "Hourly mean wage for Computer and Information Analysts in Sector 51 - Information in the United States", 
-     "OEUN000000051--5215121004": "Annual mean wage for Computer and Information Analysts in Sector 51 - Information in the United States", 
      "CES0500000003": "Average hourly earnings of all employees, total private in the United States", 
      "LNS11000000": "Civilian Labor Force (Seasonally Adjusted)",
      "LNS14000000": "Civilian Unemployment Rate (Seasonally Adjusted)",
@@ -37,13 +35,13 @@ def fetch_bls_data():
         })
          # Send the request
         response = requests.post("https://api.bls.gov/publicAPI/v2/timeseries/data/", data=payload, headers=headers)
-        print(response)
+        #print(response)
         data = response.json()
-        print(json.dumps(data, indent=2))
+        #print(json.dumps(data, indent=2))
 
         if data['status'] == 'REQUEST_SUCCEEDED':
             series_data = data['Results']['series'][0]['data']
-            print(series_data)
+            #print(series_data)
         else:
             print("Failed to retrieve data:", data.get('message', 'Unknown error'))
         records = [
@@ -60,10 +58,10 @@ def fetch_bls_data():
             for item in reversed(series_data)
         ]
 
-        print("records", records)
+        #print("records", records)
 
         df = pd.DataFrame(records)
-        print(df)
+        #print(df)
         df.to_csv(f"data/raw_data/{series}.csv", index=False)
 
     return
@@ -76,27 +74,27 @@ Web-scrapping for Employment projections for jobs in tech industry:
 def web_scrape_bls_employment_projections():
     url = "https://data.bls.gov/projections/nationalMatrix?queryParams=510000&ioType=i&_csrf=projections"
     response = requests.get(url)
-    print(response)
+    #print(response)
     soup = BeautifulSoup(response.text, 'html.parser')
-    print(soup.prettify())
+    #print(soup.prettify())
 
     # get a list of all table tags
     table_list = soup.find_all('table')
 
     # how many are there?
-    print('there is/are', len(table_list), 'table/s')
+    #print('there is/are', len(table_list), 'table/s')
     table = table_list[0]
     rows = table.find_all('tr')
     # how many rows are there?
-    print('there are', len(rows), 'table rows')
+    #print('there are', len(rows), 'table rows')
 
     # first row (sub-0 row) contains column headers
     headers = rows[0].find_all('th')
 
     # how many columns are there?
-    print('there are', len(headers), 'columns')
-    for h in headers:
-        print(h.contents)
+    #print('there are', len(headers), 'columns')
+    # for h in headers:
+    #     print(h.contents)
 
     headers = []
     rows = []
@@ -111,54 +109,15 @@ def web_scrape_bls_employment_projections():
 
     df = pd.DataFrame(rows, columns=headers)
     code_col = df.columns[1]
-    print(code_col)
+    #print(code_col)
     filtered_df = df[df[code_col].astype(str).str.startswith('15')]
-    print(filtered_df)
+    #print(filtered_df)
     filtered_df.to_csv("data/raw_data/employment_projections_tech.csv", index=False)
     return
 
 
-fetch_bls_data()
+#fetch_bls_data()
 #web_scrape_bls_employment_projectsions()
-
-
-
-def pittsburgh_computer_occupation_outlook():
-    """
-    Extract tables from a PDF and filter for computer-related occupations in Pittsburgh
-    """
-    pdf_path = "pghmsa_ltop.pdf"  # Replace with your PDF path
-
-    # Pattern to match SOC codes starting with 15-
-    soc_pattern = re.compile(r'^15-\d{4}')
-
-    matching_rows = []
-
-    with pdfplumber.open(pdf_path) as pdf:
-        for page in pdf.pages:
-            tables = page.extract_tables()
-            for table in tables:
-                # Convert to DataFrame
-                df = pd.DataFrame(table[1:], columns=table[0])
-
-                # Find the SOC column (case-insensitive match)
-                soc_col = next((col for col in df.columns if 'soc' in col.lower()), None)
-                if soc_col:
-                    # Filter rows where SOC code starts with '15-'
-                    filtered_df = df[df[soc_col].str.match(soc_pattern, na=False)]
-                    matching_rows.append(filtered_df)
-
-    # Combine all filtered tables
-    final_df = pd.concat(matching_rows, ignore_index=True)
-
-    # Display the result
-    print(final_df)
-
-    # Optionally, save to CSV
-    final_df.to_csv("data/raw_data/pittsburgh_computer_occupation_outlook.csv", index=False)
-    return
-
-
 
 def pittsburgh_computer_wage_outlook():
     """
@@ -185,10 +144,10 @@ def pittsburgh_computer_wage_outlook():
                     if re.match(soc_pattern, row):
                         print("Matched SOC code row:", row)
                         matching_rows.append(row)
-        print(matching_rows)
+        #print(matching_rows)
                 # df = pd.DataFrame(table[1:], columns=table[0])
         final_df = pd.DataFrame(matching_rows, columns=columns)
-        print(final_df)
+        #print(final_df)
         final_df.to_csv("data/raw_data/pittsburgh_computer_wage_outlook.csv", index=False)
 
     return
