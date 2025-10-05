@@ -11,7 +11,6 @@ Project_web_scraping_FY/
 │   ├── config.py                   # Configuration settings
 │   ├── data_analyzer.py            # Data analysis tools
 │   ├── onet_scraper.py             # O*NET scraper
-│   ├── pennsylvania_bls_api.py     # BLS API integration
 │   └── pennsylvania_scraper.py     # Pennsylvania-specific scraper
 ├── pages/                          # Streamlit page modules
 │   ├── overview.py                 # Dashboard overview

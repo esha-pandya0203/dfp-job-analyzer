@@ -26,7 +26,6 @@ Project_web_scraping_FY/
 ├── modules/                        # Core functionality modules
 │   ├── __init__.py
 │   ├── pennsylvania_scraper.py     # Pennsylvania data scraper
-│   ├── pennsylvania_bls_api.py     # BLS API integration
 │   ├── onet_scraper.py             # General O*NET scraper
 │   ├── data_analyzer.py            # Data analysis tools
 │   └── config.py                   # Configuration settings

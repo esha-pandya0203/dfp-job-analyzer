@@ -12,17 +12,9 @@ Version: 1.0
 
 # Import all page modules
 from . import overview
-from . import occupation_analysis
-from . import skills_analysis
-from . import salary_analysis
-from . import bls_statistics
-from . import data_integration
+from . import job_search
 
 __all__ = [
     'overview',
-    'occupation_analysis', 
-    'skills_analysis',
-    'salary_analysis',
-    'bls_statistics',
-    'data_integration'
+    'job_search'
 ]
