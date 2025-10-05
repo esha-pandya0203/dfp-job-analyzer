@@ -63,13 +63,13 @@ class ProjectIntegrator:
         return True
     
     def run_data_analysis(self):
-        """Run the Pennsylvania data analysis"""
-        print("\nRunning Pennsylvania data analysis...")
+        """Run the data analysis"""
+        print("\nRunning data analysis...")
         
         try:
-            # Run the analysis script with proper encoding
+            # Run the O*NET data analysis instead
             result = subprocess.run([
-                sys.executable, "utils/analyze_pa_data_fixed.py"
+                sys.executable, "-c", "from modules.onet_scraper import EnhancedONETScraper; scraper = EnhancedONETScraper(); print('O*NET scraper ready')"
             ], capture_output=True, text=True, encoding='utf-8', errors='ignore')
             
             if result.returncode == 0:

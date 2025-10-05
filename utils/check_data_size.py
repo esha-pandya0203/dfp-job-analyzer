@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-检查数据文件规模
+Check data file sizes
 """
 
 import pandas as pd
@@ -9,16 +9,16 @@ import os
 import glob
 
 def check_data_size():
-    print("检查所有数据文件的规模...")
+    print("Checking sizes of all data files...")
     print("=" * 50)
     
-    # 数据文件夹路径
+    # Data folder path
     data_folder = "data/raw_data_project"
     
-    # 获取所有CSV文件
+    # Get all CSV files
     csv_files = glob.glob(os.path.join(data_folder, "*.csv"))
     
-    print(f"找到 {len(csv_files)} 个CSV文件:")
+    print(f"Found {len(csv_files)} CSV files:")
     print()
     
     total_rows = 0
@@ -26,11 +26,11 @@ def check_data_size():
     
     for file_path in csv_files:
         try:
-            # 获取文件大小
+            # Get file size
             file_size = os.path.getsize(file_path)
             file_size_mb = file_size / (1024 * 1024)
             
-            # 读取文件获取行数
+            # Read file to get row count
             df = pd.read_csv(file_path)
             rows = len(df)
             total_rows += rows
@@ -43,46 +43,46 @@ def check_data_size():
             })
             
             print(f"📄 {os.path.basename(file_path)}")
-            print(f"   行数: {rows:,}")
-            print(f"   列数: {len(df.columns)}")
-            print(f"   大小: {file_size_mb:.2f} MB")
-            print(f"   列名: {list(df.columns)[:5]}..." if len(df.columns) > 5 else f"   列名: {list(df.columns)}")
+            print(f"   Rows: {rows:,}")
+            print(f"   Columns: {len(df.columns)}")
+            print(f"   Size: {file_size_mb:.2f} MB")
+            print(f"   Column names: {list(df.columns)[:5]}..." if len(df.columns) > 5 else f"   Column names: {list(df.columns)}")
             print()
             
         except Exception as e:
-            print(f"❌ 读取文件 {os.path.basename(file_path)} 时出错: {e}")
+            print(f"❌ Error reading file {os.path.basename(file_path)}: {e}")
             print()
     
-    # 总结
+    # Summary
     print("=" * 50)
-    print(f"📊 数据总结:")
-    print(f"   总文件数: {len(csv_files)}")
-    print(f"   总行数: {total_rows:,}")
-    print(f"   最大文件: {max(file_info, key=lambda x: x['rows'])['filename']}")
-    print(f"   最大文件行数: {max(file_info, key=lambda x: x['rows'])['rows']:,}")
+    print(f"📊 Data Summary:")
+    print(f"   Total files: {len(csv_files)}")
+    print(f"   Total rows: {total_rows:,}")
+    print(f"   Largest file: {max(file_info, key=lambda x: x['rows'])['filename']}")
+    print(f"   Largest file rows: {max(file_info, key=lambda x: x['rows'])['rows']:,}")
     
-    # 检查PA州数据
+    # Check PA state data
     print("\n" + "=" * 50)
-    print("🔍 检查PA州数据:")
+    print("🔍 Checking PA state data:")
     
-    # 检查专门的PA州文件
+    # Check dedicated PA state file
     pa_file = os.path.join(data_folder, "pennsylvania_occupations_20250924_105620.csv")
     if os.path.exists(pa_file):
         pa_df = pd.read_csv(pa_file)
-        print(f"   PA州专门文件: {len(pa_df)} 个职位")
-        print(f"   职位族: {pa_df['occupation_family'].unique()}")
+        print(f"   PA dedicated file: {len(pa_df)} occupations")
+        print(f"   Occupation families: {pa_df['occupation_family'].unique()}")
     
-    # 检查大文件中是否有PA州数据
+    # Check if large files contain PA state data
     largest_file = max(file_info, key=lambda x: x['rows'])
-    print(f"\n📈 最大的文件 ({largest_file['filename']}) 分析:")
+    print(f"\n📈 Analysis of largest file ({largest_file['filename']}):")
     
-    if largest_file['rows'] > 10000:  # 如果文件很大，只读取一部分
-        print("   文件太大，读取前1000行进行分析...")
+    if largest_file['rows'] > 10000:  # If file is too large, only read first 1000 rows
+        print("   File too large, reading first 1000 rows for analysis...")
         df_sample = pd.read_csv(os.path.join(data_folder, largest_file['filename']), nrows=1000)
     else:
         df_sample = pd.read_csv(os.path.join(data_folder, largest_file['filename']))
     
-    # 检查是否有位置信息
+    # Check for location information
     location_keywords = ['location', 'state', 'city', 'address']
     location_cols = []
     
@@ -90,14 +90,14 @@ def check_data_size():
         if any(keyword in col.lower() for keyword in location_keywords):
             location_cols.append(col)
     
-    print(f"   位置相关列: {location_cols}")
+    print(f"   Location-related columns: {location_cols}")
     
     if location_cols:
-        print("   检查是否包含PA州数据...")
+        print("   Checking if contains PA state data...")
         for col in location_cols:
             if col in df_sample.columns:
                 pa_matches = df_sample[col].astype(str).str.contains('PA|Pennsylvania', case=False, na=False).sum()
-                print(f"     {col}: {pa_matches} 行包含PA关键词")
+                print(f"     {col}: {pa_matches} rows contain PA keywords")
     
     return file_info
 
