@@ -3,8 +3,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import os 
 import plotly.graph_objects as go
+import plotly.express as px
 
-def show_overview(bls_data):
+
+def show_overview(job_data, bls_data, bls_dict):
     """Show overview dashboard"""
     st.header("📈 United States Employment Overview")
     
@@ -111,5 +113,37 @@ def show_overview(bls_data):
 
     else:
         st.warning("Projections file not found: employment_projections_tech.csv")
+
+    #SKILLS 
+
+    if not job_data.empty and 'code' in job_data.columns:
+        most_common_code = job_data['code'].mode().iloc[0] if not job_data['code'].mode().empty else '15-0000'
+        category_name = bls_dict.get(most_common_code, 'Computer Occupations')
+        st.subheader(f"🛠️ Skills Trends for {category_name}")
+    else:
+        st.subheader("🛠️ Skills Trends for Computer Occupations")
+        
+    all_skills = []
+    for skills in job_data['skills']:
+        if isinstance(skills, list):
+            all_skills.extend(skills)
     
-    show_overview(bls)
+    if all_skills:
+        skill_counts = pd.Series(all_skills).value_counts().head(10)
+        fig = px.bar(
+            x=skill_counts.values,
+            y=skill_counts.index,
+            orientation='h',
+            title="Top Skills in Computer Occupations",
+            labels={'x': 'Frequency', 'y': 'Skills'}
+        )
+        fig.update_layout(
+            yaxis={'categoryorder':'total ascending'},
+            xaxis_title="Frequency",
+            yaxis_title="Skills"
+        )
+        st.plotly_chart(fig, use_container_width=True)
+    else:
+        st.info("No skills data available")
+    
+  
