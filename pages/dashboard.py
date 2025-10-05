@@ -1,123 +1,149 @@
 import streamlit as st
 import pandas as pd
-import plotly.express as px
+import matplotlib.pyplot as plt
+import os 
 import plotly.graph_objects as go
+import plotly.express as px
 
-def show_overview(pa_data, bls_data):
+
+def show_overview(job_data, bls_data, bls_dict):
     """Show overview dashboard"""
-    st.header("📈 Pennsylvania Employment Overview")
+    st.header("📈 United States Employment Overview")
     
-    # Key metrics
-    col1, col2, col3, col4 = st.columns(4)
-    
-    with col1:
-        st.metric(
-            label="Total Occupations",
-            value=len(pa_data),
-            delta=f"{pa_data['occupation_family'].nunique()} families"
+    if 'employment_level' in bls_data and 'unemployment_level' in bls_data:
+    # Merge datasets on Date
+        merged = pd.merge(
+            bls_data['employment_level'][['Date', 'employment_level']],
+            bls_data['unemployment_level'][['Date', 'unemployment_level']],
+            on='Date',
+            how='inner'
+        ).sort_values('Date')
+
+        st.sidebar.header("Filters")
+        start_date, end_date = st.sidebar.slider(
+            "Select Date Range:",
+            min_value=merged['Date'].min().to_pydatetime(),
+            max_value=merged['Date'].max().to_pydatetime(),
+            value=(merged['Date'].min().to_pydatetime(), merged['Date'].max().to_pydatetime())
         )
-    
-    with col2:
-        valid_salaries = pa_data['salary_median_clean'].dropna()
-        if len(valid_salaries) > 0:
-            avg_salary = valid_salaries.mean()
-            st.metric(
-                label="Average Salary",
-                value=f"${avg_salary:,.0f}",
-                delta="per hour"
-            )
-        else:
-            st.metric("Average Salary", "N/A")
-    
-    with col3:
-        if 'job_growth' in pa_data.columns:
-            growth_data = pa_data['job_growth'].dropna()
-            if len(growth_data) > 0:
-                avg_growth = growth_data.mean()
-                st.metric(
-                    label="Average Job Growth",
-                    value=f"{avg_growth:.1f}%",
-                    delta="projected"
-                )
-            else:
-                st.metric("Average Job Growth", "No Data", delta="N/A")
-        else:
-            st.metric("Average Job Growth", "No Data", delta="N/A")
-    
-    with col4:
-        if 'pa_cities_mentioned' in pa_data.columns:
-            # Parse string format lists and count cities
-            def count_cities(city_str):
-                if pd.isna(city_str):
-                    return 0
-                if isinstance(city_str, str):
-                    # Remove brackets and quotes, then split by comma
-                    city_str = city_str.strip("[]").replace("'", "").replace('"', "")
-                    cities = [city.strip() for city in city_str.split(',') if city.strip()]
-                    return len(cities)
-                return 0
-            
-            cities_mentioned = pa_data['pa_cities_mentioned'].apply(count_cities).sum()
-            st.metric(
-                label="City Mentions",
-                value=cities_mentioned,
-                delta="total references"
-            )
-        else:
-            st.metric("City Mentions", "N/A")
-    
-    st.markdown("---")
-    
-    # Charts
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        st.subheader("📊 Occupation Family Distribution")
-        family_counts = pa_data['occupation_family'].value_counts()
-        
-        fig = px.pie(
-            values=family_counts.values,
-            names=family_counts.index,
-            title="Distribution by Occupation Family"
+
+        filtered = merged[(merged['Date'] >= start_date) & (merged['Date'] <= end_date)]
+
+        st.subheader("📊 Employment vs Unemployment Over Time")
+
+        fig, ax = plt.subplots(figsize=(10, 5))
+        ax.plot(filtered['Date'], filtered['employment_level'], label='Employment Level', linewidth=2)
+        ax.plot(filtered['Date'], filtered['unemployment_level'], label='Unemployment Level', linewidth=2, color='red')
+        ax.set_title("US Employment vs Unemployment Levels")
+        ax.set_xlabel("Date")
+        ax.set_ylabel("Number of People (in thousands)")
+        ax.legend()
+        st.pyplot(fig)
+
+    else:
+        st.error("Missing employment or unemployment data files.")
+
+    # Load projections dataset
+    projections_path = os.path.join("data/raw_data", "employment_projections_tech.csv")
+    if os.path.exists(projections_path):
+        print("employment projects")
+        projections_df = pd.read_csv(projections_path)
+        projections_df.columns = projections_df.columns.str.strip()
+
+        # Select only relevant columns
+        cols = [
+            "Occupation Title",
+            "2024 Percent of Occupation",
+            "Projected 2034 Percent of Occupation",
+            "2024 Percent of Industry",
+            "Projected 2034 Percent of Industry",
+        ]
+        df_proj = projections_df[cols].copy()
+
+        # Option to choose which metric to visualize
+        st.subheader("💼 Tech Employment Projections (2024 vs. 2034)")
+
+        metric = st.radio(
+            "Select Comparison Metric:",
+            options=[
+                "Percent of Occupation",
+                "Percent of Industry"
+            ],
+            index=0
         )
-        fig.update_traces(textposition='inside', textinfo='percent+label')
-        st.plotly_chart(fig, width='stretch')
-    
-    with col2:
-        st.subheader("💰 Salary Distribution")
-        valid_salaries = pa_data['salary_median_clean'].dropna()
-        
-        if len(valid_salaries) > 0:
-            fig = px.histogram(
-                valid_salaries,
-                nbins=20,
-                title="Salary Distribution",
-                labels={'x': 'Salary ($/hour)', 'y': 'Count'}
-            )
-            st.plotly_chart(fig, width='stretch')
+
+        # Rename columns dynamically based on selected metric
+        if metric == "Percent of Occupation":
+            col_2024 = "2024 Percent of Occupation"
+            col_2034 = "Projected 2034 Percent of Occupation"
         else:
-            st.info("No salary data available")
-    
-    # Data summary
-    st.subheader("📋 Data Summary")
-    
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        st.write("**Data Completeness:**")
-        completeness = {
-            'Descriptions': len(pa_data[pa_data['description'].str.len() > 0]),
-            'Technology Skills': len(pa_data[pa_data['technology_skills'].apply(lambda x: len(str(x).strip()) > 2 if pd.notna(x) else False)]),
-            'Education Info': len(pa_data[pa_data['education_level'].str.len() > 0]),
-            'Salary Data': len(pa_data['salary_median_clean'].dropna())
-        }
+            col_2024 = "2024 Percent of Industry"
+            col_2034 = "Projected 2034 Percent of Industry"
+
+        # Keep top 10 or so to keep it readable
+        top_df = df_proj.nlargest(10, col_2034)
+
+        # Create grouped bar chart
+        fig = go.Figure(data=[
+            go.Bar(
+                name='2024',
+                x=top_df["Occupation Title"],
+                y=top_df[col_2024],
+                marker_color='steelblue'
+            ),
+            go.Bar(
+                name='2034 (Projected)',
+                x=top_df["Occupation Title"],
+                y=top_df[col_2034],
+                marker_color='orange'
+            )
+        ])
+
+        fig.update_layout(
+            barmode='group',
+            title=f"Tech Occupations — 2024 vs 2034 {metric}",
+            xaxis_title="Occupation Title",
+            yaxis_title=f"{metric} (%)",
+            xaxis_tickangle=-45,
+            legend_title="Year",
+            height=600
+        )
+
+        st.plotly_chart(fig, use_container_width=True)
+
+    else:
+        st.warning("Projections file not found: employment_projections_tech.csv")
+
+    #SKILLS 
+
+    if not job_data.empty and 'code' in job_data.columns:
+        most_common_code = job_data['code'].mode().iloc[0] if not job_data['code'].mode().empty else '15-0000'
+        category_name = bls_dict.get(most_common_code, 'Computer Occupations')
+        st.subheader(f"🛠️ Skills Trends for {category_name}")
+    else:
+        st.subheader("🛠️ Skills Trends for Computer Occupations")
         
-        for field, count in completeness.items():
-            percentage = (count / len(pa_data)) * 100
-            st.write(f"- {field}: {count}/{len(pa_data)} ({percentage:.1f}%)")
+    all_skills = []
+    for skills in job_data['skills']:
+        if isinstance(skills, list):
+            all_skills.extend(skills)
     
-    with col2:
-        st.write("**Top Occupation Families:**")
-        top_families = pa_data['occupation_family'].value_counts().head(5)
-        for family, count in top_families.items():
-            st.write(f"- {family}: {count} occupations")
+    if all_skills:
+        skill_counts = pd.Series(all_skills).value_counts().head(10)
+        fig = px.bar(
+            x=skill_counts.values,
+            y=skill_counts.index,
+            orientation='h',
+            title="Top Skills in Computer Occupations",
+            labels={'x': 'Frequency', 'y': 'Skills'}
+        )
+        fig.update_layout(
+            yaxis={'categoryorder':'total ascending'},
+            xaxis_title="Frequency",
+            yaxis_title="Skills"
+        )
+        st.plotly_chart(fig, use_container_width=True)
+    else:
+        st.info("No skills data available")
+    
+  
