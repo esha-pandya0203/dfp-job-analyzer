@@ -1,7 +1,6 @@
 import streamlit as st 
-import pandas as pd 
-import matplotlib.pyplot as plt 
-import seaborn as sns 
+import asyncio 
+import sys 
 from modules.nav import navbar 
 from utils.bls_data_scraper import fetch_bls_data, web_scrape_bls_employment_projections, pittsburgh_computer_wage_outlook
 from utils.data_loader import load_bls_data, load_pittsburgh_data, load_job_data
@@ -16,6 +15,9 @@ from pages import dashboard
 def main(): 
     #webscrape all the data only the relevants ones reference bls_data dict 
     #store csv files in data/raw_data
+    with st.spinner("⏳ Collecting job postings. This may take up to 10 minutes. Please be patient..."):
+        clear_processed_data() 
+        collect_all_job_postings() 
 
     #BLS DATA SCRAPE/API REQUESTS 
     fetch_bls_data()
