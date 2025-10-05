@@ -16,9 +16,12 @@ from utils.data_scraper import collect_all_job_postings, clear_processed_data
 def main(): 
     #webscrape all the data only the relevants ones reference bls_data dict 
     #store csv files in data/raw_data
-    with st.spinner("⏳ Collecting job postings. This may take up to 10 minutes. Please be patient..."):
-        clear_processed_data() 
-        collect_all_job_postings() 
+    # scrape all data on start-up, only occurs once per session 
+    if 'startup_done' not in st.session_state:
+        st.session_state.startup_done = True
+        with st.spinner("⏳ Collecting job postings. This may take up to 10 minutes. Please be patient..."):
+            clear_processed_data() 
+            collect_all_job_postings() 
 
     #populate application dashboards 
 
