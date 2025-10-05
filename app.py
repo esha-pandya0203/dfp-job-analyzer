@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns 
 from modules.nav import navbar 
 from utils.bls_data_scraper import fetch_bls_data, web_scrape_bls_employment_projections, pittsburgh_computer_wage_outlook
-from utils.data_loader import load_bls_data, load_pittsburgh_data
+from utils.data_loader import load_bls_data, load_pittsburgh_data, load_job_data
 from data.bls_dict import bls_dict
 
 st.set_page_config(page_title='Job Market Dashboard', page_icon='📊', layout='wide')
@@ -32,12 +32,13 @@ def main():
 
      # Load data
     with st.spinner("Loading data..."):
+        job_data = load_job_data()
         pa_wage_data = load_pittsburgh_data(bls_dict=bls_dict)
         print(pa_wage_data)
         bls_data = load_bls_data()
 
     if page == "Dashboard":
-        dashboard.show_overview(bls_data)
+        dashboard.show_overview(job_data, bls_data, bls_dict)
     # elif page == "Job Search":
     #     job_search.show_job_search()
     
