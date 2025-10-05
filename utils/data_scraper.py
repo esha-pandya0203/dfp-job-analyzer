@@ -1,5 +1,3 @@
-#input functions that scrape your data and create corresponding csv in data/raw_data 
-
 import asyncio
 import csv
 import random
@@ -141,7 +139,7 @@ def scrape_from_indeed(job_title, soc_code):
 
     postings = pd.DataFrame(postings) 
 
-    column_headers = ["title", "company", "location", "category", "avg_salary", "description", "redirect_url", "experience_level", "soc_code"]
+    column_headers = ["title", "company", "location", "category", "avg_salary", "description", "redirect_url", "experience_level", "soc_code", "matched_skills"]
     postings = postings.reindex(columns=column_headers)
     return postings
 
@@ -152,6 +150,7 @@ def fetch_jobs(title, max_results=50, results_per_page=50):
     print(f"\nFetching jobs for: '{title}'...")
 
     API_URL = 'https://api.adzuna.com/v1/api/jobs/{country}/search/{page}' 
+    DETAIL_URL = 'https://api.adzuna.com/v1/api/jobs/{country}/details/{job_id}'
     COUNTRY = 'us' 
 
     # retrieve API credentials 
@@ -172,7 +171,7 @@ def fetch_jobs(title, max_results=50, results_per_page=50):
             'app_key': API_KEY, 
             'results_per_page': results_per_page, 
             'what': title, 
-            'where': 'Pennsylvania', 
+            'where': 'Pittsburgh', 
             'content-type': 'application/json', 
             'sort_by': 'date' 
         }
@@ -195,7 +194,7 @@ def fetch_jobs(title, max_results=50, results_per_page=50):
 
         page += 1 
         time.sleep(1) # avoid hitting rate limits 
-    
+
     return collected_jobs
 
 '''
@@ -233,7 +232,8 @@ def jobs_to_dataframe(jobs, soc_code):
         job_dicts.append(job_dict)
 
     df = pd.DataFrame(job_dicts)
-    df["Matched_Skills"] = df["description"].apply(extract_skills)
+    df['matched_skills'] = df['description'].apply(extract_skills)
+    print(df['matched_skills'].head(10))
     print('Finished matching skills')
     return df 
 
@@ -290,7 +290,7 @@ def collect_all_job_postings():
     indeed_job_titles = ['Software Developer', 'Operations', 'QA', 'Cloud Engineer', 'Data Analyst', 'Data Scientist', 'Data Scientist', 'Cybersecurity', 'Network Engineer']
     adzuna_job_titles = ['Data Engineer', 'AI/ML', 'IT', 'Technical Product Manager', 'DevOps'] 
 
-    column_headers = ["title", "company", "location", "category", "avg_salary", "description", "redirect_url", "experience_level", "soc_code"] 
+    column_headers = ["title", "company", "location", "category", "avg_salary", "description", "redirect_url", "experience_level", "soc_code", "matched_skills"] 
 
     for job_title in adzuna_job_titles:
         soc_code = match_job_title_to_soc_code(job_title)

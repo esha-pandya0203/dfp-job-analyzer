@@ -1,12 +1,13 @@
 import pandas as pd
 import ast
+import re 
 
+# extract and clean skills 
 def extract_skills_from_occupation_data(): 
     # load data
     skills_df = pd.read_csv("data/raw_data/occupations_data.csv")
-    # jobs_df = pd.read_csv("/Users/fathimasumreen/indeed_scraper/indeed_scraper_2/Main Job Postings data - Computer Network Architects.csv")
 
-    # Extract all unique skills from the technology_skills column
+    # extract all unique skills from the technology_skills column
     all_skills = []
     for skills in skills_df["technology_skills"].dropna():
         try:
@@ -18,21 +19,31 @@ def extract_skills_from_occupation_data():
     all_skills = list(set(all_skills))  # unique skills
     return all_skills 
 
-# unction to find skills in description
+# build regex patterns for each skill 
+# add small tolerance for plurals or endings (e.g., s, es, ing) 
+def build_regex_patterns(all_skills):
+    skill_patterns = {}
+    for skill in all_skills:
+        escaped = re.escape(skill)
+        # Handle short skills (like "r", "c", "go") carefully: exact word only
+        if len(skill) <= 2:
+            pattern = re.compile(rf'\b{escaped}\b', re.IGNORECASE)
+        else:
+            # For longer skills, allow simple endings like plural "s" or "es"
+            pattern = re.compile(rf'\b{escaped}(?:s|es|ing)?\b', re.IGNORECASE)
+        skill_patterns[skill] = pattern
+    
+    return skill_patterns
+
+ALL_SKILLS = extract_skills_from_occupation_data()
+SKILL_PATTERNS = build_regex_patterns(ALL_SKILLS)
+
+# find skills in description 
 def extract_skills(description):
-    print('Extracting data')
     if pd.isna(description):
         return []
     desc = description.lower()
 
-    all_skills = extract_skills_from_occupation_data(); 
-
-    return [skill for skill in all_skills if skill in desc]
-
-    # # Apply to jobs
-    # jobs_df["Matched_Skills"] = jobs_df["description"].apply(extract_skills)
-
-    # # Save results
-    # jobs_df.to_csv("Jobs_with_Matched_Skills_Network.csv", index=False)
-
-    # print("✅ Done! Saved as Jobs_with_Matched_Skills.csv")
+    matched = [skill for skill, pattern in SKILL_PATTERNS.items() if pattern.search(desc)]
+    print(f"Description: {desc[:30]}... Matched: {matched}")
+    return matched
