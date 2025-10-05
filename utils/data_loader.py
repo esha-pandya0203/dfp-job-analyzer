@@ -112,13 +112,16 @@ def load_job_data():
     try:
         # Try to load job data from various sources
         data_files = [
-            # "data/raw_data/15-1251.csv",
-            # "data/raw_data/15-1252.csv", 
-            # "data/raw_data/15-1253.csv",
-            "data/raw_data/15-2050.csv",
-            # "data/raw_data/11-3021.csv",
-            # "data/raw_data/15-1241.csv"
+            "data/Jobs_with_Matched_Skills_CompProg.csv",
+            "data/Jobs_with_Matched_Skills_DataSci.csv",
+            "data/Jobs_with_Matched_Skills_Managers.csv",
+            "data/Jobs_with_Matched_Skills_Network.csv",
+            "data/Jobs_with_Matched_Skills_QA.csv",
+            "data/Jobs_with_Matched_Skills_SoftDev.csv"
         ]
+        column_names = ['title', 'company', 'description', 'location', 
+                        'avg_salary', 'experience_level', 'skills', 'soc_code']
+        concat_rows = pd.DataFrame(columns=column_names)
         
         for file_path in data_files:
             print(file_path)
@@ -130,69 +133,13 @@ def load_job_data():
                     # Clean and standardize the data
                     df = clean_job_data(df)
                     print("cleaned", df.head())
-                    return df
+                    concat_rows = pd.concat([concat_rows, df])
         
-        # If no data exists, create some mock data for demo
-        st.warning("No job data found. Creating mock data for demo...")
-        mock_data = create_mock_job_data()
-        return mock_data
+        return concat_rows
         
     except Exception as e:
         st.error(f"Error loading job data: {e}")
         return None
-def create_mock_job_data():
-    """Create mock job data for demonstration"""
-    import pandas as pd
-    
-    mock_jobs = [
-        {
-            'title': 'Software Engineer',
-            'code': '15-1252',
-            'description': 'Develops, creates, and modifies general computer applications software or specialized utility programs.',
-            'skills': ['Python', 'JavaScript', 'SQL', 'Git'],
-            'education': 'Bachelor\'s degree in Computer Science or related field',
-            'salary': '$85,000 - $120,000',
-            'employment': 'High demand'
-        },
-        {
-            'title': 'Data Scientist',
-            'code': '15-2050',
-            'description': 'Extracts insights from data using statistical analysis and machine learning techniques.',
-            'skills': ['Python', 'R', 'Machine Learning', 'Statistics'],
-            'education': 'Master\'s degree in Data Science or related field',
-            'salary': '$90,000 - $130,000',
-            'employment': 'Growing rapidly'
-        },
-        {
-            'title': 'Data Analyst',
-            'code': '15-2050',
-            'description': 'Analyzes data to help organizations make informed business decisions.',
-            'skills': ['Excel', 'SQL', 'Tableau', 'Python'],
-            'education': 'Bachelor\'s degree in Business or related field',
-            'salary': '$55,000 - $80,000',
-            'employment': 'Steady demand'
-        },
-        {
-            'title': 'Product Manager',
-            'code': '11-3021',
-            'description': 'Oversees product development and manages product lifecycle.',
-            'skills': ['Project Management', 'Analytics', 'Communication', 'Strategy'],
-            'education': 'Bachelor\'s degree in Business or related field',
-            'salary': '$75,000 - $110,000',
-            'employment': 'High demand'
-        },
-        {
-            'title': 'UX Designer',
-            'code': '27-1024',
-            'description': 'Designs user experiences for digital products and services.',
-            'skills': ['Figma', 'User Research', 'Prototyping', 'Design Thinking'],
-            'education': 'Bachelor\'s degree in Design or related field',
-            'salary': '$65,000 - $95,000',
-            'employment': 'Growing field'
-        }
-    ]
-    
-    return pd.DataFrame(mock_jobs)
 
 def clean_job_data(df):
     """Clean and standardize job data"""
@@ -207,7 +154,7 @@ def clean_job_data(df):
         'location': 'location',
         'avg_salary': 'avg_salary',
         'experienceLevel': 'experience_level',
-        'skills': 'skills',
+        'Matched_Skills': 'skills',
         'Job_Category_Code': 'soc_code'
     }
     #title,company,location,category,avg_salary,description,redirect_url,experience_level,soc_code
