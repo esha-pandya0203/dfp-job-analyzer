@@ -2,9 +2,9 @@ BLS_SOC_MAPPING = {
     # Computer Programmers
     "15-1251": {
         "soc_title": "Computer Programmers",
-        "job_titles": ['AI', 'ML', 'Artificial Intelligence', 'Machine Learning', 
+        "job_titles": ['AI/ML', 'AI', 'ML', 'Artificial Intelligence', 'Machine Learning', 
                        'Generative AI', 'Gen AI', 'LLM', 'Software Engineer with Poly Mid', 
-                       'Cloud', 'IT Security', 'IT', 'Support Technician', 'IT Support', 
+                       'Cloud', 'Cloud Engineer', 'IT Security', 'IT', 'Support Technician', 'IT Support', 
                        'Product Support Engineer', 'Lead', 'Technical Support', 'Windows Engineer', 
                        'Tech Leader', 'CIO', 'Technology Officer', 'Azure', 'AWS', 'Technology', 
                        'Reliability Engineer', 'Customer Success Manager', 'Monitoring Center Analyst', 
@@ -16,7 +16,7 @@ BLS_SOC_MAPPING = {
     # Software Developers
     "15-1252": {
         "soc_title": "Software Developers",
-        "job_titles": ['DevOps', 'Release Manager', 'PaaS Lead', 
+        "job_titles": ['DevOps', 'Software Developer', 'Release Manager', 'PaaS Lead', 
                        'Platorm Infrastructure Engineer', 'RHEL Engineer', 'RHEL', 
                        'Experienced Software Engineer', 'Software', 'Developer', 
                        'Frontend engineer', 'Backend Engineer', 'Full Stack', 
@@ -44,7 +44,7 @@ BLS_SOC_MAPPING = {
     # Data Scientists
     "15-2050": {
         "soc_title": "Data Scientists",
-        "job_titles": [
+        "job_titles": [ 'Data Analyst', 'Data Scientist', 'Data Engineer',
             'Data', 'Business Intelligence Analyst', 
             'Analytics', 'Analyst', 'PowerBI Developer', 
             'Quantitative', 'Applied Scientist', 'Machine Learning', 
@@ -57,7 +57,7 @@ BLS_SOC_MAPPING = {
     # Computer and Information Systems Managers
     "11-3021": {
         "soc_title": "Computer and Information Systems Managers",
-        "job_titles": ['Product', 'Wealth Management Analyst', ' Creative Strategist', 
+        "job_titles": ['Technical Product Manager', 'Product', 'Wealth Management Analyst', ' Creative Strategist', 
                        'UX', 'UI', 'Solutions', 'Technical Product Manager'],
         "category": "Management & Leadership"
     },
@@ -65,7 +65,7 @@ BLS_SOC_MAPPING = {
     # Computer Network Architects
     "15-1241": {
         "soc_title": "Computer Network Architects",
-        "job_titles": [
+        "job_titles": ['Network Engineer', 
             'Information Security', 'SOC', 'Cybersecurity', 
             'Cyber', 'Security', 'Compliance', 'Information System', 
             'Help Desk Support', 'Engineer, Data Center', 'Security Risk Analyst', 
