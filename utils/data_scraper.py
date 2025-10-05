@@ -8,7 +8,8 @@ import time
 import pandas as pd 
 import os 
 from playwright.async_api import async_playwright
-from utils.job_title_mapping import BLS_SOC_MAPPING
+from utils.job_title_mapping import match_job_title_to_soc_code
+from utils.skill_extractor import extract_skills
 
 '''
 Determine the experience level for the provided job given its title and description. 
@@ -147,14 +148,14 @@ def scrape_from_indeed(job_title, soc_code):
 '''
 Retrieves job listings from Adzuna for the given job title and maximum number of results. 
 '''
-def fetch_jobs(title, location=None, max_results=50, results_per_page=50):
+def fetch_jobs(title, max_results=50, results_per_page=50):
     print(f"\nFetching jobs for: '{title}'...")
 
     API_URL = 'https://api.adzuna.com/v1/api/jobs/{country}/search/{page}' 
     COUNTRY = 'us' 
 
     # retrieve API credentials 
-    with open('adzuna_credentials.csv', mode='r') as file: 
+    with open('utils/adzuna_credentials.csv', mode='r') as file: 
         reader = csv.DictReader(file)
         credentials = next(reader) 
         API_ID = credentials['API_ID']
@@ -171,11 +172,10 @@ def fetch_jobs(title, location=None, max_results=50, results_per_page=50):
             'app_key': API_KEY, 
             'results_per_page': results_per_page, 
             'what': title, 
-            'content-type': 'application/json'
+            'where': 'Pennsylvania', 
+            'content-type': 'application/json', 
+            'sort_by': 'date' 
         }
-
-        if location: 
-            params['where'] = location 
         
         response = requests.get(url, params=params)
 
@@ -207,12 +207,23 @@ def jobs_to_dataframe(jobs, soc_code):
     '''
     job_dicts = [] 
     for job in jobs: 
+        salary_min = job.get('salary_min') 
+        salary_max = job.get('salary_max')
+        if isinstance(salary_min, (int, float)) and isinstance(salary_max, (int, float)):
+            avg_salary = (salary_min + salary_max) / 2
+        elif isinstance(salary_min, (int, float)):
+            avg_salary = salary_min
+        elif isinstance(salary_max, (int, float)):
+            avg_salary = salary_max
+        else:
+            avg_salary = None  # Or 0, or skip, depending on your needs
+
         job_dict = {
             'title': job.get('title'), 
             'company': job.get('company', {}).get('display_name'), 
             'location': job.get('location', {}).get('display_name'), 
             'category': job.get('category', {}).get('label'), 
-            'avg_salary': (job.get('salary_min') + job.get('salary_max')) / 2, 
+            'avg_salary': avg_salary, 
             'description': job.get('description'), 
             'redirect_url': job.get('redirect_url'), 
             'experience_level': 'N/A', 
@@ -222,6 +233,8 @@ def jobs_to_dataframe(jobs, soc_code):
         job_dicts.append(job_dict)
 
     df = pd.DataFrame(job_dicts)
+    df["Matched_Skills"] = df["description"].apply(extract_skills)
+    print('Finished matching skills')
     return df 
 
 '''
@@ -239,32 +252,8 @@ def scrape_from_adzuna(job_title, soc_code):
 
     # convert to DataFrame 
     postings = jobs_to_dataframe(jobs, soc_code) 
-    print(postings.head()) 
 
     return postings 
-
-'''
-Returns the matching SOC code from BLS to the given job title. 
-'''
-def match_job_title_to_soc_code(job_title):
-    for soc_code, values in BLS_SOC_MAPPING.items():
-        if job_title in values['job_titles']:
-            return soc_code 
-
-'''
-Returns all SOC codes from BLS that match the given job title. 
-'''
-def find_all_matching_soc_codes(job_title):
-    matched_codes = set() 
-    text = job_title.split(' ') 
-
-    for soc_code, values in BLS_SOC_MAPPING.items():
-        for title in values['job_titles']:
-            for word in text: 
-                if word.upper() == title.upper(): 
-                    matched_codes.add(soc_code)
-    
-    return matched_codes
 
 def append_to_csv(filename, data, column_headers=None): 
     output_dir = 'data/processed_data'
@@ -303,7 +292,7 @@ def collect_all_job_postings():
 
     column_headers = ["title", "company", "location", "category", "avg_salary", "description", "redirect_url", "experience_level", "soc_code"] 
 
-    for job_title in ALL_JOBS:
+    for job_title in adzuna_job_titles:
         soc_code = match_job_title_to_soc_code(job_title)
         print(f'Found soc code {soc_code} for {job_title}')
 

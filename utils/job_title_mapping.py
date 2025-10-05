@@ -2,7 +2,7 @@ BLS_SOC_MAPPING = {
     # Computer Programmers
     "15-1251": {
         "soc_title": "Computer Programmers",
-        "job_titles": ['AI/ML', 'AI', 'ML', 'Artificial Intelligence', 'Machine Learning', 
+        "job_titles": ['Computer Programmers', 'AI/ML', 'AI', 'ML', 'Artificial Intelligence', 'Machine Learning', 
                        'Generative AI', 'Gen AI', 'LLM', 'Software Engineer with Poly Mid', 
                        'Cloud', 'Cloud Engineer', 'IT Security', 'IT', 'Support Technician', 'IT Support', 
                        'Product Support Engineer', 'Lead', 'Technical Support', 'Windows Engineer', 
@@ -177,6 +177,29 @@ def validate_mapping():
             print(f"  {title} -> {result['soc_code']} ({result['soc_title']})")
         else:
             print(f"  {title} -> Not found")
+
+'''
+Returns the matching SOC code from BLS to the given job title. 
+'''
+def match_job_title_to_soc_code(job_title):
+    for soc_code, values in BLS_SOC_MAPPING.items():
+        if job_title in values['job_titles']:
+            return soc_code 
+
+'''
+Returns all SOC codes from BLS that match the given job title. 
+'''
+def find_all_matching_soc_codes(job_title):
+    matched_codes = set() 
+    text = job_title.split(' ') 
+
+    for soc_code, values in BLS_SOC_MAPPING.items():
+        for title in values['job_titles']:
+            for word in text: 
+                if word.upper() == title.upper(): 
+                    matched_codes.add(soc_code)
+    
+    return matched_codes
 
 if __name__ == "__main__":
     validate_mapping()
