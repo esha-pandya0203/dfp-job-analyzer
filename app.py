@@ -24,7 +24,7 @@ def main():
 
 
     #navbar (need to add Overview and Job Search)
-    navbar(); 
+    # navbar(); 
     page = st.sidebar.selectbox(
         "Choose Analysis Section",
         ["Dashboard", "Job Search"]

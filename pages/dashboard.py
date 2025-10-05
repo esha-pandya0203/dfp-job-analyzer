@@ -111,3 +111,5 @@ def show_overview(bls_data):
 
     else:
         st.warning("Projections file not found: employment_projections_tech.csv")
+    
+    show_overview(bls)
