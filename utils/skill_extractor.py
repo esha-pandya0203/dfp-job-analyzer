@@ -45,5 +45,4 @@ def extract_skills(description):
     desc = description.lower()
 
     matched = [skill for skill, pattern in SKILL_PATTERNS.items() if pattern.search(desc)]
-    print(f"Description: {desc[:30]}... Matched: {matched}")
     return matched

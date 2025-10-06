@@ -4,9 +4,9 @@ import matplotlib.pyplot as plt
 import os 
 import plotly.graph_objects as go
 import plotly.express as px
+from utils.job_title_mapping import BLS_SOC_MAPPING
 
-
-def show_overview(job_data, bls_data, bls_dict):
+def show_overview(job_data, bls_data):
     """Show overview dashboard"""
     st.header("📈 United States Employment Overview")
     
@@ -115,18 +115,15 @@ def show_overview(job_data, bls_data, bls_dict):
         st.warning("Projections file not found: employment_projections_tech.csv")
 
     #SKILLS 
-
-    if not job_data.empty and 'code' in job_data.columns:
-        most_common_code = job_data['code'].mode().iloc[0] if not job_data['code'].mode().empty else '15-0000'
-        category_name = bls_dict.get(most_common_code, 'Computer Occupations')
+    if not job_data.empty and 'soc_code' in job_data.columns:
+        category_name = BLS_SOC_MAPPING[job_data['soc_code'].iloc[0]]['soc_title']
         st.subheader(f"🛠️ Skills Trends for {category_name}")
     else:
         st.subheader("🛠️ Skills Trends for Computer Occupations")
         
     all_skills = []
-    for skills in job_data['skills']:
-        if isinstance(skills, list):
-            all_skills.extend(skills)
+    for skills in job_data['matched_skills']:
+        all_skills.extend(skills)
     
     if all_skills:
         skill_counts = pd.Series(all_skills).value_counts().head(10)

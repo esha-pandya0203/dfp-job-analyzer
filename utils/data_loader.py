@@ -4,14 +4,11 @@ import streamlit as st
 import os
 import re
 
-
 @st.cache_data
-def load_prcoessed_job_data(category): 
-    return pd.read_csv(f'data/processed_data/{category}')
-
-@st.cache_data 
-def load_general_stats(file_name):
-    return pd.read_csv(f'data/processed_data/{file_name}')
+def load_prcoessed_job_data(soc_code): 
+    filepath = f'data/processed_data/{soc_code}.csv'
+    if os.path.exists(filepath):
+        return pd.read_csv(filepath)
 
 @st.cache_data
 def load_bls_data():
@@ -39,14 +36,14 @@ def load_bls_data():
                         df['Date'] = pd.to_datetime(df['Date'])
                 else:
                     # Non-time-series dataset (like projections)
-                    st.info(f"Loaded {filename} (non-time-series dataset)")
+                    print(f"Loaded {filename} (non-time-series dataset)")
 
                 bls_data[key] = df
 
             except Exception as e:
-                st.warning(f"Could not load {filename}: {e}")
+                print(f"Could not load {filename}: {e}")
         else:
-            st.warning(f"File not found: {filename}")
+            print(f"File not found: {filename}")
 
     return bls_data
 
@@ -109,18 +106,14 @@ def load_pittsburgh_data(bls_dict, wage_filename="pittsburgh_computer_wage_outlo
 @st.cache_data
 def load_job_data():
     """Load job data from scraper"""
+    # get csv files from processed_data folder 
+    filepath = 'data\processed_data'
+    data_files = [
+        os.path.join(filepath, file) for file in os.listdir(filepath) if file.endswith('.csv')
+    ]
+
     try:
-        # Try to load job data from various sources
-        data_files = [
-            "data/Jobs_with_Matched_Skills_CompProg.csv",
-            "data/Jobs_with_Matched_Skills_DataSci.csv",
-            "data/Jobs_with_Matched_Skills_Managers.csv",
-            "data/Jobs_with_Matched_Skills_Network.csv",
-            "data/Jobs_with_Matched_Skills_QA.csv",
-            "data/Jobs_with_Matched_Skills_SoftDev.csv"
-        ]
-        column_names = ['title', 'company', 'description', 'location', 
-                        'avg_salary', 'experience_level', 'skills', 'soc_code']
+        column_names = ["title", "company", "location", "avg_salary", "description", "redirect_url", "experience_level", "soc_code", "job_category", "matched_skills"]
         concat_rows = pd.DataFrame(columns=column_names)
         
         for file_path in data_files:
@@ -128,13 +121,12 @@ def load_job_data():
             if os.path.exists(file_path):
                 print("found file")
                 df = pd.read_csv(file_path)
-                print("uncleaned", df.head())
                 if not df.empty:
                     # Clean and standardize the data
-                    df = clean_job_data(df)
-                    print("cleaned", df.head())
+                    # df = clean_job_data(df)
+                    # print("cleaned", df.head())
                     concat_rows = pd.concat([concat_rows, df])
-        
+                
         return concat_rows
         
     except Exception as e:

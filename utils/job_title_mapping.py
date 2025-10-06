@@ -29,12 +29,12 @@ BLS_SOC_MAPPING = {
         "soc_title": "Software Quality Assurance Analysts and Testers",
         "job_titles": ['Operations', 'General Manager', 'Project Coordinator', 
                        'Administrative Business Partner', 'Logistics', 'Customer Experience Specialist', 
-                       'Brand Manager', 'Plant Manager', 'Customer Success', 'Demand Planner', 
+                       'Brand Manager', 'Plant Manager', 'Demand Planner', 
                        'Workforce Management', 'Operational', 'Supply Chain', 'Coordinator', 
                        'Extruder Area Manager', 'Administrative Assistant', 'Operating', 
                        'Commodities', 'People, Culture, & Performance', 'Executive Assistant', 
                        'Regional Manager', 'Assistant', 'Concierge', 'Learning & Development', 
-                       'Marketing', 'Executive', 'Customer Success', 'VP', 'Vice President', 
+                       'Marketing', 'Executive', 'VP', 'Vice President', 
                        'Field Deployment Lead', 'Warehouse Lead', 'Regional Sales', 
                        'Store Manager', 'HR', 'Retail', 'Recruiter', 'QA', 'Quality Assurance', 
                        'Tester', 'Quality Control'],
@@ -47,9 +47,8 @@ BLS_SOC_MAPPING = {
         "job_titles": [ 'Data Analyst', 'Data Scientist', 'Data Engineer',
             'Data', 'Business Intelligence Analyst', 
             'Analytics', 'Analyst', 'PowerBI Developer', 
-            'Quantitative', 'Applied Scientist', 'Machine Learning', 
-            'Research Scientist', 'Decision Science', 'Scientist', 
-            'AI', 'ML', 'Gen AI'
+            'Quantitative', 'Applied Scientist', 'Research Scientist', 
+            'Decision Science', 'Scientist' 
         ],
         "category": "Data & Analytics"
     },
@@ -57,8 +56,9 @@ BLS_SOC_MAPPING = {
     # Computer and Information Systems Managers
     "11-3021": {
         "soc_title": "Computer and Information Systems Managers",
-        "job_titles": ['Technical Product Manager', 'Product', 'Wealth Management Analyst', ' Creative Strategist', 
-                       'UX', 'UI', 'Solutions', 'Technical Product Manager'],
+        "job_titles": ['Computer and Information Systems Managers', 'Technical Product Manager', 'Product', 
+                       'Wealth Management Analyst', ' Creative Strategist', 
+                       'UX', 'UI', 'Solutions'],
         "category": "Management & Leadership"
     },
     
@@ -69,7 +69,7 @@ BLS_SOC_MAPPING = {
             'Information Security', 'SOC', 'Cybersecurity', 
             'Cyber', 'Security', 'Compliance', 'Information System', 
             'Help Desk Support', 'Engineer, Data Center', 'Security Risk Analyst', 
-            'IT', 'IT Support', 'Privacy', 'Incident Response', 'Data Center', 'Strategy',
+            'Privacy', 'Incident Response', 'Data Center', 'Strategy',
               'Vulnerability', 'Network', 'Threat Analyst', 'Technology and Innovation', 
               'Security Operations', 'Counterintelligence', 'Risk', 'Internal Audit',
                 'Incident', 'Threat', 'Anti-Money Laundering',

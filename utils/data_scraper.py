@@ -6,7 +6,7 @@ import time
 import pandas as pd 
 import os 
 from playwright.async_api import async_playwright
-from utils.job_title_mapping import match_job_title_to_soc_code
+from utils.job_title_mapping import match_job_title_to_soc_code 
 from utils.skill_extractor import extract_skills
 
 '''
@@ -113,7 +113,8 @@ async def scrape_jobs(job_title, soc_code, max_postings=300):
                         "description": description,
                         "redirect_url": link,
                         "experience_level": level, 
-                        "soc_code": soc_code
+                        "soc_code": soc_code, 
+                        "job_category": job_title
                     })
 
                     print(f"    ✅ {title[:50]}... | {location} | {level}")
@@ -139,7 +140,7 @@ def scrape_from_indeed(job_title, soc_code):
 
     postings = pd.DataFrame(postings) 
 
-    column_headers = ["title", "company", "location", "category", "avg_salary", "description", "redirect_url", "experience_level", "soc_code", "matched_skills"]
+    column_headers = ["title", "company", "location", "avg_salary", "description", "redirect_url", "experience_level", "soc_code", "job_category", "matched_skills"]
     postings = postings.reindex(columns=column_headers)
     return postings
 
@@ -200,7 +201,7 @@ def fetch_jobs(title, max_results=50, results_per_page=50):
 '''
 Converts collected jobs to a dataframe. 
 '''
-def jobs_to_dataframe(jobs, soc_code): 
+def jobs_to_dataframe(jobs, soc_code, job_title): 
     '''
     Create a dataframe for individual job titles 
     '''
@@ -221,20 +222,18 @@ def jobs_to_dataframe(jobs, soc_code):
             'title': job.get('title'), 
             'company': job.get('company', {}).get('display_name'), 
             'location': job.get('location', {}).get('display_name'), 
-            'category': job.get('category', {}).get('label'), 
             'avg_salary': avg_salary, 
             'description': job.get('description'), 
             'redirect_url': job.get('redirect_url'), 
             'experience_level': 'N/A', 
-            'soc_code': soc_code
+            'soc_code': soc_code, 
+            'job_category': job_title
         }
 
         job_dicts.append(job_dict)
 
     df = pd.DataFrame(job_dicts)
     df['matched_skills'] = df['description'].apply(extract_skills)
-    print(df['matched_skills'].head(10))
-    print('Finished matching skills')
     return df 
 
 '''
@@ -251,7 +250,7 @@ def scrape_from_adzuna(job_title, soc_code):
     print(f"Total jobs fetched for {job_title}: {len(jobs)}")
 
     # convert to DataFrame 
-    postings = jobs_to_dataframe(jobs, soc_code) 
+    postings = jobs_to_dataframe(jobs, soc_code, job_title) 
 
     return postings 
 
@@ -290,7 +289,7 @@ def collect_all_job_postings():
     indeed_job_titles = ['Software Developer', 'Operations', 'QA', 'Cloud Engineer', 'Data Analyst', 'Data Scientist', 'Data Scientist', 'Cybersecurity', 'Network Engineer']
     adzuna_job_titles = ['Data Engineer', 'AI/ML', 'IT', 'Technical Product Manager', 'DevOps'] 
 
-    column_headers = ["title", "company", "location", "category", "avg_salary", "description", "redirect_url", "experience_level", "soc_code", "matched_skills"] 
+    column_headers = ["title", "company", "location", "avg_salary", "description", "redirect_url", "experience_level", "soc_code", "job_category", "matched_skills"] 
 
     for job_title in adzuna_job_titles:
         soc_code = match_job_title_to_soc_code(job_title)
