@@ -107,7 +107,7 @@ def load_pittsburgh_data(bls_dict, wage_filename="pittsburgh_computer_wage_outlo
 def load_job_data():
     """Load job data from scraper"""
     # get csv files from processed_data folder 
-    filepath = 'data\processed_data'
+    filepath = 'data/processed_data'
     data_files = [
         os.path.join(filepath, file) for file in os.listdir(filepath) if file.endswith('.csv')
     ]
@@ -123,7 +123,7 @@ def load_job_data():
                 df = pd.read_csv(file_path)
                 if not df.empty:
                     # Clean and standardize the data
-                    # df = clean_job_data(df)
+                    df = clean_job_data(df)
                     # print("cleaned", df.head())
                     concat_rows = pd.concat([concat_rows, df])
                 
@@ -146,8 +146,9 @@ def clean_job_data(df):
         'location': 'location',
         'avg_salary': 'avg_salary',
         'experienceLevel': 'experience_level',
-        'Matched_Skills': 'skills',
-        'Job_Category_Code': 'soc_code'
+        'Matched_Skills': 'matched_skills',
+        'Job_Category_Code': 'soc_code',
+        'category': 'job_category'
     }
     #title,company,location,category,avg_salary,description,redirect_url,experience_level,soc_code
     
@@ -166,7 +167,7 @@ def clean_job_data(df):
                 df_clean[col] = 'N/A'
     
     # # Clean skills column - convert string representation of list to actual list
-    if 'skills' in df_clean.columns:
+    if 'matched_skills' in df_clean.columns:
         def parse_skills(skills_str):
             if pd.isna(skills_str) or skills_str == 'N/A':
                 return []
@@ -180,7 +181,10 @@ def clean_job_data(df):
                     return [s.strip().strip("'\"") for s in skills_str.split(',')]
             return skills_str if isinstance(skills_str, list) else []
         
-        df_clean['skills'] = df_clean['skills'].apply(parse_skills)
+        df_clean['matched_skills'] = df_clean['matched_skills'].apply(parse_skills)
+    else:
+        # Create empty matched_skills column if it doesn't exist
+        df_clean['matched_skills'] = [[]] * len(df_clean)
     
     # Add salary column if not exists
     # if 'salary' not in df_clean.columns:
