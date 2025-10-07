@@ -407,9 +407,9 @@ def display_job_listings(job_listings):
     """Display job listings with apply buttons"""
     st.subheader("💼 Available Job Listings")
     
-#     if not job_listings:
-#         st.info("No job listings found for this position.")
-#         return
+    # if not job_listings:
+    #     st.info("No job listings found for this position.")
+    #     return
     
     st.write(f"Found {len(job_listings)} job listings:")
     st.write(f"Displaying 5 Jobs Per Category")
