@@ -1,92 +1,128 @@
-# Indeed Job Scraper (Playwright)
+# 🧠 LinkedIn Job Scraper + Skill Matcher (Apify Integration)
 
-This project scrapes **Software Developer** job postings from [Indeed.com](https://www.indeed.com) for the **USA**, collecting up to 500 recent postings.  
-The scraper extracts:
-
-- Job Title  
-- Full Description  
-- Posting Link URL  
-- Salary Range  
-- Location  
-- Job Level (Entry-Level, Experienced, Internship – inferred from text)  
-
-All results are saved into a CSV file.
+This project automates the process of **scraping job postings from LinkedIn** using the **Apify API**, then enhances the data by matching **technology skills** from the official `occupations_data.csv` dataset.
 
 ---
 
-## 🚀 Setup
+## 🚀 Features
 
-1. **Clone this repo** or copy the script to your project folder.
-
-2. **Create a virtual environment** (recommended):
-   ```bash
-   python3 -m venv venv
-   source venv/bin/activate   # Mac/Linux
-   venv\Scripts\activate      # Windows
-
-
-3. **Install dependencies**
-    pip3 install -r requirements.txt
-
-4. **Install Playwright browsers**
-    playwright install
-
-
-**▶️ Run the Scraper**
-    python3 scrape_software_dev.py
-
-The script will:
-
-Open Indeed search results (q=software+developer, sort=date)
-Visit each job card and fetch details
-Save them to software_developer_jobs_USA_full.csv
-Repeat this for other Job Titles
-
-**⚠️ Notes**
-
-Playwright runs a real browser, so scraping may be slower but more reliable than Selenium.
-Random delays are added between requests to reduce the chance of being blocked.
-If a CAPTCHA appears, complete it manually in the opened browser window.
-
-
-**🛠️ Customization**
-
-Change the search keyword by updating:
-    JOB_TITLE = "software developer"
-
-Change the number of postings:
-    MAX_POSTINGS = 300
-
-
-**✅ Requirements**
-
-Python 3.9+
-Internet connection
-Indeed.com accessible in your region
+* Scrapes **500 job postings** per job title using Apify’s LinkedIn Jobs Actor
+* Supports **multiple job categories** and assigns **official occupation codes**
+* Extracts **salary range, job level, description, and location**
+* Matches **skills mentioned in job descriptions** against the official occupations database
+* Saves results to a **CSV file** for analysis or visualization
 
 ---
 
-**Why not BeautifulSoup?**
+## 🧩 Folder Structure
 
-We didn’t use BeautifulSoup because:
+```
+Aplify_Scraper/
+│
+├── newaPLIFY.PY                      # LinkedIn job scraper script
+├── skills_matcher.py                 # Skill extraction + matching script
+├── linkedin_jobs.csv                 # Output from the scraper
+├── skills_matched_linkedin_jobs.csv  # Output after skill matching
+├── occupations_data.csv              # Skills dataset used for matching
+├── processed_jobs/                   # Optional output folder
+└── README.md                         # You’re reading this!
+```
 
-1. Indeed blocks static scraping easily
-- If you just fetch the raw HTML with requests and parse it using BeautifulSoup, you’ll often hit blank pages or CAPTCHA walls.
-- That’s what was happening when I got "no job cards found" — Indeed serves dynamic content that isn’t always visible in plain HTML.
+---
 
-2. Playwright handles JavaScript rendering
-- Indeed loads many job details dynamically via JavaScript.
-- Playwright controls a real browser, so the page fully loads and you can reliably query job postings.
+## ⚙️ Setup Instructions
 
-3. Cleaner element targeting
-- Instead of parsing HTML trees with BeautifulSoup, Playwright lets us directly select elements (like div.job_seen_beacon) and extract text/attributes.
-- This reduces the risk of scraping empty content because Playwright “sees” what the browser sees.
+### 1️⃣ Create a Virtual Environment
 
-4. Avoid duplication
-- If we added BeautifulSoup on top of Playwright, it would just complicate things (we’d first render with Playwright, then re-parse with BeautifulSoup). Playwright’s selectors are powerful enough to replace the parsing step.
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
 
-** 💡 So: **
-Playwright = browser automation + scraping
-BeautifulSoup = static HTML parsing
+### 2️⃣ Install Dependencies
 
-Since Indeed is highly dynamic, Playwright is the more reliable choice.
+```bash
+pip install apify-client pandas
+```
+
+### 3️⃣ Configure API Access
+
+In `newaPLIFY.PY`, set your **Apify API Token** and **Actor ID**:
+
+```python
+API_TOKEN = "your_apify_api_token"
+ACTOR_ID = "RIGGeqD6RqKmlVoQU"
+```
+
+---
+
+## 🕵️‍♀️ Running the Scraper
+
+The scraper pulls data for multiple job categories and saves it to one CSV file (`linkedin_jobs.csv`).
+
+```bash
+python newaPLIFY.PY
+```
+
+Each job entry includes:
+
+* Job Title
+* Description
+* Salary Min / Max / Range
+* Location
+* Seniority Level
+* Job Category & Category Code
+
+---
+
+## 🧠 Running the Skill Matcher
+
+Once the scraper completes:
+
+```bash
+python skills_matcher.py
+```
+
+This script:
+
+* Reads all **technology skills** from `occupations_data.csv`
+* Compares them with the **job descriptions**
+* Adds a column `Matched_Skills` to show all matched skills
+* Saves output as:
+  **`skills_matched_linkedin_jobs.csv`**
+
+---
+
+## 📊 Output Example
+
+| job_category        | job_title       | location      | salary_min | salary_max | Matched_Skills               |
+| ------------------- | --------------- | ------------- | ---------- | ---------- | ---------------------------- |
+| Data Scientists     | Data Analyst    | New York, USA | 75000      | 110000     | ['python', 'sql', 'tableau'] |
+| Software Developers | DevOps Engineer | Toronto, CA   | 90000      | 125000     | ['aws', 'docker', 'jenkins'] |
+
+---
+
+## 🧾 Job Category Codes
+
+| Job Category                     | Code    |
+| -------------------------------- | ------- |
+| Computer Programmers             | 15-1251 |
+| Software Developers              | 15-1252 |
+| Software QA Analysts and Testers | 15-1253 |
+| Data Scientists                  | 15-2050 |
+| Computer & Info Systems Managers | 11-3021 |
+| Computer Network Architects      | 15-1241 |
+
+---
+
+## ✅ Notes
+
+* The Apify Actor `RIGGeqD6RqKmlVoQU` must be public and accessible.
+* You can adjust the number of jobs per title via `MAX_JOBS_PER_TITLE`.
+* Ensure `occupations_data.csv` contains the column `technology_skills`.
+* Output files will be created automatically in your project directory.
+
+---
+
+**Created by:** Sumreen
+**Purpose:** Automate large-scale LinkedIn job data collection and skill mapping for North American tech roles.
