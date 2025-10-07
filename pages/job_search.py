@@ -13,38 +13,16 @@ def show_job_search():
     st.header("🔍 Job Search & Analysis")
     st.markdown("Search for specific job titles and get comprehensive market analysis")
     
-    # Load data    
-    # if JOB_DATA is None:
-    #     st.error("Unable to load Pittsburgh job posting data. Please check file paths.")
-    #     return
-    
-    # Search Interface
+    # search Interface
     st.subheader("📋 Search Interface")
 
     search_input = st.selectbox('Select a Job:', ['Computer Programmers', 'Software Developers', 'Software Quality Assurance Analysts and Testers', 'Data Scientists', 'Computer and Information Systems Managers', 'Computer Network Architects'])
-    
-    # st.write(JOB_DATA) 
-    st.write(BLS_DATA) 
 
     # search results 
     if search_input: 
         search_results = perform_job_search(search_input)
         display_search_results(search_results, search_input)
     
-    # # Search Results
-    # if search_input:
-    #     search_results = perform_job_search(search_input, pa_data, bls_data, job_listings)
-    #     display_search_results(search_results, search_input)
-    #     # Clear the session state after displaying results
-    #     if 'job_search_input' in st.session_state:
-    #         del st.session_state.job_search_input
-    # else:
-    #     # Show available job titles and job listings summary
-    #     show_available_job_titles(selected_category)
-    #     if not job_listings.empty:
-    #         show_job_listings_summary(job_listings)
-
-# def perform_job_search(job_title, pa_data, bls_data, job_listings):
 def perform_job_search(job_title): 
     """Perform job search and return results"""
     results = {
@@ -56,117 +34,30 @@ def perform_job_search(job_title):
         "job_data": None 
     }
     
-    # Find SOC code
+    # find SOC code
     soc_info = find_soc_code(job_title)
     results["soc_info"] = soc_info
     
     if soc_info:
         job_data = load_prcoessed_job_data(soc_info['soc_code'])
         results["job_data"] = job_data
-
-#         # Search O*NET data for matches
-#         onet_matches = search_onet_data(job_title, pa_data, soc_info)
-#         results["onet_matches"] = onet_matches
         
-        # Get BLS data if available
+        # get BLS data if available
         if BLS_DATA is not None:
             bls_match = search_bls_data(soc_info["soc_code"])
             results["bls_data"] = bls_match
         
-        # Search job listings
-        # if not JOB_DATA.empty:
-        #     job_matches = search_job_listings(job_title, JOB_DATA)
-        #     results["job_listings"] = job_matches
-        
-#         # Perform market analysis
+        # Perform market analysis
 #         results["market_analysis"] = analyze_job_market(onet_matches, bls_data, job_listings)
-    st.write(results)
     return results
-
-# def search_onet_data(job_title, pa_data, soc_info):
-#     """Search O*NET data for job matches"""
-#     matches = []
-    
-#     # Search by title similarity
-#     job_title_lower = job_title.lower()
-    
-#     for idx, row in pa_data.iterrows():
-#         title = str(row.get('title', '')).lower()
-        
-#         # Check for keyword matches
-#         title_words = job_title_lower.split()
-#         title_match_score = 0
-        
-#         for word in title_words:
-#             if len(word) > 3 and word in title:
-#                 title_match_score += 1
-        
-#         # If we have a good match, add to results
-#         if title_match_score >= 1:
-#             match_data = {
-#                 "title": row.get('title', ''),
-#                 "occupation_family": row.get('occupation_family', ''),
-#                 "salary_median": row.get('salary_median', ''),
-#                 "technology_skills": row.get('technology_skills', ''),
-#                 "education_level": row.get('education_level', ''),
-#                 "job_growth": row.get('job_growth', ''),
-#                 "match_score": title_match_score,
-#                 "soc_mapping": soc_info
-#             }
-#             matches.append(match_data)
-    
-#     # Sort by match score
-#     matches.sort(key=lambda x: x["match_score"], reverse=True)
-#     return matches[:5]  # Return top 5 matches
-
-# def search_job_listings(job_title, job_listings):
-#     """Search job listings for matches"""
-#     matches = []
-    
-#     if job_listings.empty:
-#         return matches
-    
-#     job_title_lower = job_title.lower()
-    
-#     for idx, row in job_listings.iterrows():
-#         title = str(row.get('Job_title', '')).lower()
-        
-#         # Check for keyword matches
-#         title_words = job_title_lower.split()
-#         title_match_score = 0
-        
-#         for word in title_words:
-#             if len(word) > 3 and word in title:
-#                 title_match_score += 1
-        
-#         # If we have a good match, add to results
-#         if title_match_score >= 1:
-#             match_data = {
-#                 "title": row.get('Job_title', ''),
-#                 "company": row.get('Company', ''),
-#                 "location": row.get('Location', ''),
-#                 "salary_min": row.get('Salary_min_clean', ''),
-#                 "salary_max": row.get('Salary_max_clean', ''),
-#                 "skills": row.get('Skills_parsed', []),
-#                 "experience_level": row.get('Experience_level', ''),
-#                 "redirect_link": row.get('Redirect_link', ''),
-#                 "apply_url": row.get('Apply_url', '') or row.get('apply_url', '') or row.get('ApplyURL', ''),
-#                 "soc_code": row.get('SOC_Code', ''),
-#                 "match_score": title_match_score
-#             }
-#             matches.append(match_data)
-    
-#     # Sort by match score
-#     matches.sort(key=lambda x: x["match_score"], reverse=True)
-#     return matches[:10]  # Return top 10 matches
 
 def search_bls_data(soc_code):
     """Search BLS data for SOC code"""
     if BLS_DATA is None:
         return None
     
-    # This would search BLS data for the specific SOC code
-    # For now, return placeholder data
+    # this would search BLS data for the specific SOC code
+    # TODO!! 
     return {
         "soc_code": soc_code,
         "employment_count": "N/A",
@@ -360,56 +251,13 @@ def display_search_results(search_results, search_input):
 #         fig.update_layout(height=400)
 #         st.plotly_chart(fig, use_container_width=True)
 
-# def display_onet_matches(matches):
-#     """Display O*NET occupation matches"""
-#     st.subheader("🎯 Similar Occupations (O*NET)")
-    
-#     for i, match in enumerate(matches, 1):
-#         with st.expander(f"{i}. {match['title']} (Match Score: {match['match_score']})"):
-#             col1, col2 = st.columns(2)
-            
-#             with col1:
-#                 st.write(f"**Occupation Family:** {match['occupation_family']}")
-#                 st.write(f"**Salary Median:** {match['salary_median']}")
-#                 # Clean and display education level with expandable functionality
-#                 clean_education = clean_education_text(match['education_level'])
-#                 if len(clean_education) > 30:
-#                     truncated = clean_education[:27] + "..."
-#                     st.write(f"**Education Level:** {truncated}")
-                    
-#                     # Use session state to manage expand state
-#                     expand_key = f"onet_education_{i}_{hash(clean_education)}"
-#                     if st.button("📖 View Full", key=f"onet_match_{expand_key}"):
-#                         st.session_state[expand_key] = True
-                    
-#                     # Show expanded content if state is True
-#                     if st.session_state.get(expand_key, False):
-#                         st.info(f"**Full Education Level:** {clean_education}")
-#                         if st.button("🔙 Back", key=f"back_onet_match_{expand_key}"):
-#                             st.session_state[expand_key] = False
-#                             st.rerun()
-#                 else:
-#                     st.write(f"**Education Level:** {clean_education}")
-            
-#             with col2:
-#                 st.write(f"**Job Growth:** {match['job_growth']}")
-#                 st.write(f"**SOC Code:** {match['soc_mapping']['soc_code']}")
-                
-#                 # Display skills
-#                 skills = match.get('technology_skills', '')
-#                 if skills and str(skills) != 'nan':
-#                     st.write("**Technology Skills:**")
-#                     skills_list = str(skills).strip("[]").replace("'", "").split(", ")
-#                     for skill in skills_list[:5]:  # Show first 5 skills
-#                         st.write(f"• {skill.strip()}")
-
 def display_job_listings(job_listings):
     """Display job listings with apply buttons"""
     st.subheader("💼 Available Job Listings")
     
-    # if not job_listings:
-    #     st.info("No job listings found for this position.")
-    #     return
+    if job_listings is None or job_listings.empty:
+        st.info("No job listings found for this position.")
+        return
     
     st.write(f"Found {len(job_listings)} job listings:")
     st.write(f"Displaying 5 Jobs Per Category")
