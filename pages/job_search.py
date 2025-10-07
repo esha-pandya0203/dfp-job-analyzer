@@ -413,6 +413,18 @@ def display_job_listings(job_listings):
     
     st.write(f"Found {len(job_listings)} job listings:")
     st.write(f"Displaying 5 Jobs Per Category")
+    
+    # Check if job_category column exists, if not create a default one
+    if 'job_category' not in job_listings.columns:
+        if 'category' in job_listings.columns:
+            job_listings['job_category'] = job_listings['category']
+        else:
+            job_listings['job_category'] = 'General'
+    
+    # Check if matched_skills column exists, if not create a default one
+    if 'matched_skills' not in job_listings.columns:
+        job_listings['matched_skills'] = [[]] * len(job_listings)
+    
     grouped_data = job_listings.groupby('job_category')
 
     for category, group_df in grouped_data: 
@@ -436,10 +448,10 @@ def display_job_listings(job_listings):
                     # elif job['salary_max']:
                     #     st.write(f"**Max Salary:** ${job['salary_max']:,.0f}")
                     
-                    if job['experience_level']:
+                    if 'experience_level' in job and job['experience_level']:
                         st.write(f"**Experience Level:** {job['experience_level']}")
                     
-                    if job['matched_skills'] and len(job['matched_skills']) > 0:
+                    if 'matched_skills' in job and job['matched_skills'] and len(job['matched_skills']) > 0:
                         st.write("**Required Skills:**")
                         #skills_text = ", ".join(job['matched_skills'][:5])  # Show first 5 skills
                         skills_text = job['matched_skills'][:5]
