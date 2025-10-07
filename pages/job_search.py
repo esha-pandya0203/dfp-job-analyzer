@@ -485,5 +485,3 @@ def display_job_listings(job_listings):
 #                 job_listings[available_columns],
 #                 use_container_width=True
 #             )
-
-show_job_search()
