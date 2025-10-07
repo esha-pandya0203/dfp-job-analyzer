@@ -8,7 +8,7 @@ from utils.data_loader import load_job_data, load_bls_data, load_prcoessed_job_d
 # JOB_DATA = load_job_data() 
 BLS_DATA = load_bls_data() 
 
-def show_job_search():
+def show_job_search(pa_wage_data):
     """Main job search page"""
     st.header("🔍 Job Search & Analysis")
     st.markdown("Search for specific job titles and get comprehensive market analysis")
@@ -21,7 +21,7 @@ def show_job_search():
     # search results 
     if search_input: 
         search_results = perform_job_search(search_input)
-        display_search_results(search_results, search_input)
+        display_search_results(search_results, search_input, pa_wage_data)
     
 def perform_job_search(job_title): 
     """Perform job search and return results"""
@@ -110,7 +110,7 @@ def search_bls_data(soc_code):
     
 #     return analysis
 
-def display_search_results(search_results, search_input):
+def display_search_results(search_results, search_input, pa_wage_data):
     """Display search results"""
     st.subheader(f"🔍 Search Results for: '{search_input}'")
     
@@ -164,7 +164,7 @@ def display_search_results(search_results, search_input):
 #         display_onet_matches(results["onet_matches"])
     
     # Job Listings
-    display_job_listings(search_results["job_data"])
+    display_job_listings(search_results["job_data"], pa_wage_data)
     
 #     # BLS Data
 #     if results["bls_data"]:
@@ -251,7 +251,7 @@ def display_search_results(search_results, search_input):
 #         fig.update_layout(height=400)
 #         st.plotly_chart(fig, use_container_width=True)
 
-def display_job_listings(job_listings):
+def display_job_listings(job_listings, pa_wage_data):
     """Display job listings with apply buttons"""
     st.subheader("💼 Available Job Listings")
     
@@ -333,8 +333,16 @@ def display_job_listings(job_listings):
                     
                     # Additional info
                     if job['soc_code']:
-                        st.write(f"**SOC Code:** {job['soc_code']}")
+                        soc_value = job.get('soc_code')
 
+                        # Filter the DataFrame for the SOC code
+                        match = pa_wage_data.loc[pa_wage_data['soc'] == soc_value, 'average_annual_wage']
+
+                        if not match.empty and pd.notna(match.iloc[0]):
+                            avg_wage = match.iloc[0]
+                            st.write(f"**📊 Pittsburgh Wage Comparison Avg Annual Wage:** ${avg_wage:,.0f}")
+                        else:
+                            st.write("**📊 Pittsburgh Wage Comparison Avg Annual Wage:** N/A")
 # def display_bls_data(bls_data):
 #     """Display BLS data"""
 #     st.subheader("📈 BLS Labor Statistics")
