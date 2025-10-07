@@ -38,13 +38,14 @@ def main():
     job_data = load_job_data()
     # TODO: remove if we are not using anywhere - it only comes up in this file when I search for it 
     pa_wage_data = load_pittsburgh_data(bls_dict=bls_dict) 
+    print("pa wages for comparison" , pa_wage_data)
     bls_data = load_bls_data()
 
     # set up navigation 
     if page == "Dashboard":
         dashboard.show_overview(job_data, bls_data)
     elif page == "Job Search":
-        job_search.show_job_search(); 
+        job_search.show_job_search(pa_wage_data); 
     
 if __name__ == "__main__":
     main()
