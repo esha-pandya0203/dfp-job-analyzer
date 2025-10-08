@@ -30,9 +30,10 @@ def main():
             web_scrape_bls_employment_projections()
             pittsburgh_computer_wage_outlook()
             
-            # Collect O*NET data
+            # Collect O*NET data - use incremental update
             scraper = EnhancedONETScraper()
-            scraper.scrape_all_occupations_enhanced()
+            scraper.run_incremental_update()
+            scraper.cleanup_temp_files()
 
     
     job_data = load_job_data()
