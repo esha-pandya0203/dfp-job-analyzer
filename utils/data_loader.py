@@ -3,12 +3,15 @@ import json
 import streamlit as st 
 import os
 import re
+import ast
 
 @st.cache_data
 def load_prcoessed_job_data(soc_code): 
     filepath = f'data/processed_data/{soc_code}.csv'
     if os.path.exists(filepath):
-        return pd.read_csv(filepath)
+        df = pd.read_csv(filepath)
+        df['matched_skills'] = df['matched_skills'].apply(ast.literal_eval)
+        return df
 
 @st.cache_data
 def load_bls_data():

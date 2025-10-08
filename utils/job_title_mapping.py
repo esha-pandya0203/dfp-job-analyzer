@@ -85,15 +85,11 @@ def create_reverse_mapping():
     reverse_mapping = {}
     
     for soc_code, data in BLS_SOC_MAPPING.items():
-        for job_title in data["job_titles"]:
-            # Normalize job title for matching
-            normalized_title = job_title.lower().strip()
-            reverse_mapping[normalized_title] = {
-                "soc_code": soc_code,
-                "soc_title": data["soc_title"],
-                "category": data["category"],
-                "original_title": job_title
-            }
+        normalized_title = data['soc_title'].lower().strip() 
+        reverse_mapping[normalized_title] = {
+            'soc_code': soc_code, 
+            'category': data['category']
+        }
     
     return reverse_mapping
 

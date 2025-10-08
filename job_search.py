@@ -287,7 +287,7 @@ def display_job_listings(job_listings):
                 with col1:
                     st.write(f"**Company:** {job['company']}")
                     st.write(f"**Location:** {job['location']}")
-                    st.write(f"**Average Salary:** {job['avg_salary']}")
+                    st.write(f"**Average Salary:** ${job['avg_salary']}")
                     
                     # if job['salary_min'] and job['salary_max']:
                     #     st.write(f"**Salary Range:** ${job['salary_min']:,.0f} - ${job['salary_max']:,.0f}")
@@ -296,13 +296,13 @@ def display_job_listings(job_listings):
                     # elif job['salary_max']:
                     #     st.write(f"**Max Salary:** ${job['salary_max']:,.0f}")
                     
-                    if 'experience_level' in job and job['experience_level']:
+                    if 'experience_level' in job and not pd.isna(job['experience_level']):
                         st.write(f"**Experience Level:** {job['experience_level']}")
-                    
+
                     if 'matched_skills' in job and job['matched_skills'] and len(job['matched_skills']) > 0:
-                        st.write("**Required Skills:**")
-                        #skills_text = ", ".join(job['matched_skills'][:5])  # Show first 5 skills
-                        skills_text = job['matched_skills'][:5]
+                        # st.write("**Required Skills:**")
+                        skills_text = ", ".join(job['matched_skills'][:5])  # Show first 5 skills
+                        # skills_text = job['matched_skills'][:5]
                         if len(job['matched_skills']) > 5:
                             skills_text += f" (+{len(job['matched_skills']) - 5} more)"
                             st.write(skills_text)
@@ -320,7 +320,8 @@ def display_job_listings(job_listings):
                                     st.session_state[expand_key] = False
                                     st.rerun()
                         else:
-                            st.write(skills_text)
+                            # st.write(skills_text)
+                            st.markdown(f"**Required Skills:** {skills_text}")
                 
                 with col2:
                     # Apply button
