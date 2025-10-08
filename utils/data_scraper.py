@@ -291,13 +291,15 @@ def collect_all_job_postings():
 
     column_headers = ["title", "company", "location", "avg_salary", "description", "redirect_url", "experience_level", "soc_code", "job_category", "matched_skills"] 
 
-    for job_title in adzuna_job_titles:
+    for job_title in ALL_JOBS:
         soc_code = match_job_title_to_soc_code(job_title)
         print(f'Found soc code {soc_code} for {job_title}')
 
-        if job_title in indeed_job_titles: 
-            job_listings = scrape_from_indeed(job_title, soc_code)
-        elif job_title in adzuna_job_titles: 
-            job_listings = scrape_from_adzuna(job_title, soc_code)
+        job_listings = scrape_from_adzuna(job_title, soc_code)
+
+        # if job_title in indeed_job_titles: 
+        #     job_listings = scrape_from_indeed(job_title, soc_code)
+        # elif job_title in adzuna_job_titles: 
+        #     job_listings = scrape_from_adzuna(job_title, soc_code)
         
         append_to_csv(f"{soc_code}.csv", job_listings, column_headers)
