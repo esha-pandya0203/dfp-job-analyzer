@@ -32,7 +32,7 @@ def main():
             
             # Collect O*NET data
             scraper = EnhancedONETScraper()
-            scraper.scrape_bls_filtered_occupations()
+            scraper.scrape_all_occupations_enhanced()
 
     
     job_data = load_job_data()
