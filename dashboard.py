@@ -117,8 +117,13 @@ def show_overview(job_data, bls_data, onet_data=None):
 
     #SKILLS 
     if not job_data.empty and 'soc_code' in job_data.columns:
-        category_name = BLS_SOC_MAPPING[job_data['soc_code'].iloc[0]]['soc_title']
-        st.subheader(f"🛠️ Skills Trends for {category_name}")
+        # Get the first valid (non-NaN) SOC code
+        soc_code = job_data['soc_code'].iloc[0]
+        if pd.notna(soc_code) and soc_code in BLS_SOC_MAPPING:
+            category_name = BLS_SOC_MAPPING[soc_code]['soc_title']
+            st.subheader(f"🛠️ Skills Trends for {category_name}")
+        else:
+            st.subheader("🛠️ Skills Trends for Computer Occupations")
     else:
         st.subheader("🛠️ Skills Trends for Computer Occupations")
         
