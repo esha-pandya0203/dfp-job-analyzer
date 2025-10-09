@@ -132,7 +132,8 @@ def show_overview(job_data, bls_data, onet_data=None):
     
     if onet_data is not None and not onet_data.empty:
         # Extract technical skills from ONet data
-        st.info("📊 Using O*NET Technical Skills Data")
+        num_occupations = len(onet_data)
+        st.info(f"📊 Using O*NET Technical Skills Data from {num_occupations} occupations. Each skill is counted by how many occupations require it (max = {num_occupations}).")
         
         # Debug: Show ONet data info
         
@@ -186,14 +187,14 @@ def show_overview(job_data, bls_data, onet_data=None):
                 x=skill_counts.values,
                 y=skill_counts.index,
                 orientation='h',
-                title="Top Skills Frequency (Bar Chart)",
-                labels={'x': 'Frequency', 'y': 'Skills'},
+                title="Top Skills by Number of Occupations Requiring Them",
+                labels={'x': 'Number of Occupations', 'y': 'Skills'},
                 color=skill_counts.values,
                 color_continuous_scale='Blues'
             )
             fig_bar.update_layout(
                 yaxis={'categoryorder':'total ascending'},
-                xaxis_title="Frequency",
+                xaxis_title="Number of Occupations",
                 yaxis_title="Skills",
                 height=500
             )

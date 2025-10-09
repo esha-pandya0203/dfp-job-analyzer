@@ -430,18 +430,14 @@ class EnhancedONETScraper:
         if not data_dir.exists():
             return None, None
         
-        # Find the latest CSV and JSON files
-        csv_files = list(data_dir.glob("bls_filtered_occupations_*.csv"))
-        json_files = list(data_dir.glob("bls_filtered_occupations_*.json"))
+        # Check for fixed filename ONET_Data files
+        csv_file = data_dir / "ONET_Data.csv"
+        json_file = data_dir / "ONET_Data.json"
         
-        if not csv_files or not json_files:
-            return None, None
+        if csv_file.exists() and json_file.exists():
+            return csv_file, json_file
         
-        # Sort by modification time and get the latest
-        latest_csv = max(csv_files, key=os.path.getmtime)
-        latest_json = max(json_files, key=os.path.getmtime)
-        
-        return latest_csv, latest_json
+        return None, None
     
     def load_existing_data(self):
         """Load existing data"""
@@ -474,8 +470,8 @@ class EnhancedONETScraper:
             
             # Check for new occupation codes
             new_codes = set()
-            for link in all_links:
-                code = self.get_occupation_code_from_url(link['url'])
+            for title, link_info in all_links.items():
+                code = link_info.get('code')
                 if code and code not in existing_codes:
                     new_codes.add(code)
             
@@ -498,25 +494,22 @@ class EnhancedONETScraper:
         all_links = self.get_all_occupation_links()
         
         # Filter links for new occupations
-        new_links = []
-        for link in all_links:
-            code = self.get_occupation_code_from_url(link['url'])
+        new_links = {}
+        for title, link_info in all_links.items():
+            code = link_info.get('code')
             if code in new_codes:
-                new_links.append(link)
+                new_links[title] = link_info
         
         logger.info(f"Found {len(new_links)} matching links for new occupations")
         
         # Scrape new occupation data
         new_data = []
-        for i, link in enumerate(new_links, 1):
+        for i, (title, link_info) in enumerate(new_links.items(), 1):
             try:
-                logger.info(f"Scraping new occupation {i}/{len(new_links)}: {link['title']}")
-                
-                # Get occupation family information
-                family_info = self.get_occupation_family_info(link['url'])
+                logger.info(f"Scraping new occupation {i}/{len(new_links)}: {title}")
                 
                 # Extract data
-                data = self.extract_comprehensive_data(link['title'], link['url'], family_info)
+                data = self.extract_comprehensive_data(title, link_info['url'], link_info)
                 if data:
                     new_data.append(data)
                 
@@ -524,7 +517,7 @@ class EnhancedONETScraper:
                 time.sleep(2)
                 
             except Exception as e:
-                logger.error(f"Failed to scrape {link['title']}: {e}")
+                logger.error(f"Failed to scrape {title}: {e}")
                 continue
         
         logger.info(f"Successfully scraped {len(new_data)} new occupations")
