@@ -10,12 +10,7 @@ import re
 API Pulls for data related to employment stats, wage stats in tech industry (information industry)
 """
 
-
-# Replace this with your actual API key
-API_KEY = "fb82158c02e24ee0ac0f39a32ccf3dc2"
-
-
-def fetch_bls_data():
+def fetch_bls_data(api_key):
     headers = {'Content-type': 'application/json'}
     series_id = {
      "CES0500000003": "Average hourly earnings of all employees, total private in the United States", 
@@ -31,7 +26,7 @@ def fetch_bls_data():
             "seriesid": [series], 
             "startyear": "2014",
             "endyear": "2024",
-            "registrationKey": API_KEY
+            "registrationKey": api_key
         })
          # Send the request
         response = requests.post("https://api.bls.gov/publicAPI/v2/timeseries/data/", data=payload, headers=headers)

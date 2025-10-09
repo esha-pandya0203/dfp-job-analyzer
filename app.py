@@ -4,6 +4,7 @@ from utils.data_loader import load_bls_data, load_pittsburgh_data, load_job_data
 from utils.data_scraper import collect_all_job_postings, clear_processed_data
 from data.bls_dict import bls_dict
 import dashboard, job_search
+import csv
 
 st.set_page_config(page_title='Job Market Dashboard', page_icon='📊', layout='wide')
 st.title('Job Analyzer') 
@@ -20,10 +21,16 @@ def main():
     if 'startup_done' not in st.session_state:
         st.session_state.startup_done = True
         with st.spinner("⏳ Collecting data. This may take up to 10 minutes. Please be patient..."):
-            clear_processed_data() 
-            collect_all_job_postings() 
-
-            fetch_bls_data()
+            #clear_processed_data() 
+            #collect_all_job_postings() 
+            try:
+                with open('data/api-bls.csv', 'r', newline='') as csvfile:
+                    reader = csv.reader(csvfile)
+                    row = next(reader)  # Get the first and only row
+                    api_key = row[1]
+            except FileNotFoundError:
+                print("Error: 'api-bls.csv' not found.")
+            fetch_bls_data(api_key)
             web_scrape_bls_employment_projections()
             pittsburgh_computer_wage_outlook()
 
