@@ -1,3 +1,23 @@
+"""
+------------------------------------------------------------
+File: skill_extractor.py
+Team: Orange Team
+Members: 
+    - Jiatong Li (jiatong4)
+    - Esha Pandya (epandya)
+    - Fan Yang (fy4)
+    - Sumreen Fathima (sumreenf)
+
+Description:
+    Code to extract skills from a job listing description applied 
+    along the dataframe's axis. 
+
+Imports:
+    - Imports from: streamlit, pandas, utils
+    - Imported by: app.py
+------------------------------------------------------------
+"""
+
 import pandas as pd
 import ast
 import re 

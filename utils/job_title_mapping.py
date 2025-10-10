@@ -1,3 +1,22 @@
+"""
+------------------------------------------------------------
+File: job_title_mapping.py
+Team: Orange Team
+Members: 
+    - Jiatong Li (jiatong4)
+    - Esha Pandya (epandya)
+    - Fan Yang (fy4)
+    - Sumreen Fathima (sumreenf)
+
+Description:
+    Defines a mapping of BLS SOC codes to their repsective job titles and key words. 
+    Code to filter incoming data based on these SOC codes and return descriptive information. 
+
+Imports:
+    - Imported by: dashboard.py, job_search.py, data_loader.py, data_scraper.py 
+------------------------------------------------------------
+"""
+
 BLS_SOC_MAPPING = {
     # Computer Programmers
     "15-1251": {

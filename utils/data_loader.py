@@ -23,6 +23,7 @@ import streamlit as st
 import os
 import re
 import ast
+from utils.job_title_mapping import BLS_SOC_MAPPING
 
 @st.cache_data
 def load_prcoessed_job_data(soc_code): 
@@ -74,7 +75,7 @@ def load_bls_data():
 
 
 @st.cache_data
-def load_pittsburgh_data(bls_dict, wage_filename="pittsburgh_computer_wage_outlook.csv"):
+def load_pittsburgh_data(wage_filename="pittsburgh_computer_wage_outlook.csv"):
     """Load and clean BLS Pittsburgh wage data and map SOC codes to keyword categories"""
     data_folder = "data/raw_data"
     wage_filepath = os.path.join(data_folder, wage_filename)
@@ -107,7 +108,7 @@ def load_pittsburgh_data(bls_dict, wage_filename="pittsburgh_computer_wage_outlo
                 soc = line.split()[0]
 
                 # filter for soc_codes associated with computer occupations
-                if soc not in bls_dict:
+                if soc not in BLS_SOC_MAPPING:
                     continue
                 
                 title = line[len(soc):].strip()  # remove SOC

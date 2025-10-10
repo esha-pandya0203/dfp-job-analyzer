@@ -234,7 +234,6 @@ def show_overview(job_data, bls_data, onet_data=None):
             
             # Create word cloud
             try:
-                from wordcloud import WordCloud
                 import random
                 
                 # Prepare word cloud data - dictionary of skill names and frequencies

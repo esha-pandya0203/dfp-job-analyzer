@@ -1,14 +1,23 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Enhanced O*NET Scraper V2 - Complete Data Extraction
-====================================================
+------------------------------------------------------------
+File: onet_scraper.py
+Team: Orange Team
+Members: 
+    - Jiatong Li (jiatong4)
+    - Esha Pandya (epandya)
+    - Fan Yang (fy4)
+    - Sumreen Fathima (sumreenf)
 
-This enhanced scraper accesses detailed sub-pages for each occupation
-to extract comprehensive information including skills, education, work context, etc.
+Description:
+    This enhanced scraper accesses detailed sub-pages for each occupation
+    to extract comprehensive information including skills, education, work context, etc.
 
-Author: Fan Yang (CMU)
-Version: 2.0
+Imports:
+    - Imports from: requests, beautifulsoup, pandas, time, re, json, urllib, logging, datetime, os, glob, pathlib 
+    - Imported by: app.py
+------------------------------------------------------------
 """
 
 import requests

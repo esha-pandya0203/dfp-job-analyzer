@@ -22,7 +22,6 @@ from utils.bls_data_scraper import fetch_bls_data, web_scrape_bls_employment_pro
 from utils.data_loader import load_bls_data, load_pittsburgh_data, load_job_data
 from utils.data_scraper import collect_all_job_postings, clear_processed_data
 from utils.onet_scraper import EnhancedONETScraper
-from data.bls_dict import bls_dict
 import dashboard, job_search
 import csv
 import pandas as pd
@@ -43,8 +42,8 @@ def main():
     if 'startup_done' not in st.session_state:
         st.session_state.startup_done = True
         with st.spinner("⏳ Collecting data. This may take up to 10 minutes. Please be patient..."):
-            #clear_processed_data() 
-            #collect_all_job_postings() 
+            clear_processed_data() 
+            collect_all_job_postings() 
             try:
                 with open('data/api-bls.csv', 'r', newline='') as csvfile:
                     reader = csv.reader(csvfile)
@@ -53,31 +52,27 @@ def main():
             except FileNotFoundError:
                 print("Error: 'api-bls.csv' not found.")
 
-            # Make API requests to BLS api endpoint and scrape BLS webpage for data
+            # make API requests to BLS api endpoint and scrape BLS webpage for data
             fetch_bls_data(api_key)
             web_scrape_bls_employment_projections()
-            # Scrape pdf for pittsburgh specific outlook data
+            # scrape pdf for pittsburgh specific outlook data
             pittsburgh_computer_wage_outlook()
             
-            # Collect O*NET data - use incremental update
+            # collect O*NET data - use incremental update
             scraper = EnhancedONETScraper()
             scraper.run_incremental_update()
             scraper.cleanup_temp_files()
 
-    # Load all the data: job listings, pittsburgh wage and bls data
+    # load all the data: job listings, pittsburgh wage and bls data
     job_data = load_job_data()
-    pa_wage_data = load_pittsburgh_data(bls_dict=bls_dict) 
+    pa_wage_data = load_pittsburgh_data() 
     bls_data = load_bls_data()
     
-    # Load O*NET data - prioritize the larger dataset
+    # load O*NET data - prioritize the larger dataset
     onet_data = None
-    nested_csv = 'dfp-job-analyzer/data/ONET_Data.csv'
     root_csv = 'data/ONET_Data.csv'
     
-    if os.path.exists(nested_csv):
-        onet_data = pd.read_csv(nested_csv)
-        print(f"✅ Loaded O*NET data from nested directory: {len(onet_data)} occupations")
-    elif os.path.exists(root_csv):
+    if os.path.exists(root_csv):
         onet_data = pd.read_csv(root_csv)
         print(f"✅ Loaded O*NET data from root directory: {len(onet_data)} occupations")
 

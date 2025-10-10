@@ -1,3 +1,23 @@
+"""
+------------------------------------------------------------
+File: data_scraper.py
+Team: Orange Team
+Members: 
+    - Jiatong Li (jiatong4)
+    - Esha Pandya (epandya)
+    - Fan Yang (fy4)
+    - Sumreen Fathima (sumreenf)
+
+Description:
+    Code to make api requests to Adzuna endpoints and collect job postings, 
+    cleaning up data before saving to respective files. 
+
+Imports:
+    - Imports from: csv, requests, time, pandas, os, re, utils 
+    - Imported by: app.py
+------------------------------------------------------------
+"""
+
 import csv
 import requests 
 import time 
