@@ -25,12 +25,6 @@ ENV/
 .DS_Store
 Thumbs.db
 
-# Data folders (optional)
-data/raw_data/*
-data/processed_data/*
-!data/raw_data/.gitkeep   # keep folder structure but ignore contents
-!data/processed_data/.gitkeep
-
 # Build / packaging
 build/
 dist/
