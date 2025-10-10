@@ -1,148 +1,105 @@
-import asyncio
 import csv
-import random
 import requests 
 import time 
 import pandas as pd 
 import os 
-from playwright.async_api import async_playwright
+import re 
+from apify_client import ApifyClient
 from utils.job_title_mapping import match_job_title_to_soc_code 
 from utils.skill_extractor import extract_skills
 
 '''
-Determine the experience level for the provided job given its title and description. 
+Parse the given salary range and return the salary min and salary max 
 '''
-def infer_level(title, description):
-    t = title.lower()
-    d = description.lower()
+def parse_salary(salary_str):
+    # Remove currency symbols, commas, and time-based suffixes
+    salary_str = salary_str.replace(",", "")
+    salary_str = re.sub(r"[\$/]", "", salary_str)
+    salary_str = re.sub(r"(per\s*year|/yr|/year|annually)", "", salary_str, flags=re.IGNORECASE)
+    salary_str = salary_str.strip()
 
-    if any(k in t for k in ["intern", "internship", "co-op"]):
-        return "Internship"
-    if any(k in t for k in ["entry", "junior", "graduate", "associate"]):
-        return "Entry-Level"
-    if any(k in t for k in ["senior", "sr.", "lead", "principal", "staff", "manager"]):
-        return "Experienced"
-    if "entry level" in d or "recent graduate" in d:
-        return "Entry-Level"
-    if any(k in d for k in ["5+ years", "senior", "lead", "expert", "principal"]):
-        return "Experienced"
-    return "Not Specified"
-
-'''
-Find all job postings from Indeed for given job titles (limit to maximum number of postings). 
-'''
-async def scrape_jobs(job_title, soc_code, max_postings=300):
-    postings = []
-
-    BASE_URL = "https://www.indeed.com"
-
-    # open webpage 
-    async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=False)
-        context = await browser.new_context(
-            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                    "AppleWebKit/537.36 (KHTML, like Gecko) "
-                    "Chrome/120.0.0.0 Safari/537.36"
-        )
-        page = await context.new_page()
-
-        # search for provided job title 
-        start = 0
-        while len(postings) < max_postings:
-            search_url = f"{BASE_URL}/jobs?q={job_title.replace(' ', '+')}&sort=date&start={start}"
-            print(f"\n🔎 Visiting {search_url}")
-            await page.goto(search_url, timeout=60000)
-            await page.wait_for_timeout(random.uniform(4000, 6000))
-
-            job_cards = await page.query_selector_all("div.job_seen_beacon")
-            if not job_cards:
-                print("⚠️ No job cards found (CAPTCHA or end of results). Stopping.")
-                break
-
-            print(f"  -> Found {len(job_cards)} jobs on this page.")
-
-            for job in job_cards:
-                if len(postings) >= max_postings:
-                    break
-
-                # scrape job specific information 
-                try:
-                    title_el = await job.query_selector("h2.jobTitle span")
-                    link_el = await job.query_selector("h2.jobTitle a")
-                    location_el = await job.query_selector("div.companyLocation")
-                    salary_el = await job.query_selector("div.metadata.salary-snippet-container")
-
-                    title = await title_el.inner_text() if title_el else "N/A"
-                    link = BASE_URL + (await link_el.get_attribute("href")) if link_el else "N/A"
-                    location = await location_el.inner_text() if location_el else "N/A"
-                    salary = await salary_el.inner_text() if salary_el else "Not Specified"
-
-                    average_salary = 'Not Found' 
-                    # parse salary range 
-                    # if '-' in salary:
-                    #     try:
-                    #         parts = salary.replace("$", "").replace(",", "").split('-')
-                    #         min_salary = int(parts[0].strip())
-                    #         max_salary = int(parts[1].split()[0].strip())
-                    #         avg_salary = (min_salary + max_salary) / 2
-                    #     except Exception as e:
-                    #         print(f"      ⚠️ Failed to parse salary range '{salary}': {e}")
-                    # elif salary.startswith("$"):
-                    #     try:
-                    #         avg_salary = int(salary.replace("$", "").replace(",", "").split()[0])
-                    #     except Exception as e:
-                    #         print(f"      ⚠️ Failed to parse single salary '{salary}': {e}")
-
-                    # Open detail page for description
-                    desc_page = await context.new_page()
-                    await desc_page.goto(link, timeout=60000)
-                    await desc_page.wait_for_timeout(random.uniform(2000, 4000))
-
-                    desc_el = await desc_page.query_selector("#jobDescriptionText")
-                    description = await desc_el.inner_text() if desc_el else "Description not found"
-                    await desc_page.close()
-
-                    level = infer_level(title, description)
-
-                    # append to dictionary for all postings 
-                    postings.append({
-                        "title": title,
-                        "company": 'Not Found', 
-                        "location": location, 
-                        "average_salary": salary, 
-                        "description": description,
-                        "redirect_url": link,
-                        "experience_level": level, 
-                        "soc_code": soc_code, 
-                        "job_category": job_title
-                    })
-
-                    print(f"    ✅ {title[:50]}... | {location} | {level}")
-
-                except Exception as e:
-                    print(f"    ⚠️ Skipped one job due to error: {e}")
-
-            start += 15
-            await page.wait_for_timeout(random.uniform(5000, 9000))
-
-        await browser.close()
-    
-    return postings 
+    if "-" in salary_str:
+        parts = salary_str.split("-")
+        try:
+            salary_min = float(re.findall(r"\d+(?:\.\d+)?", parts[0])[0])
+            salary_max = float(re.findall(r"\d+(?:\.\d+)?", parts[1])[0])
+            return int(salary_min), int(salary_max)  # Convert to int for consistency
+        except (IndexError, ValueError):
+            return None, None
+    else:
+        numbers = re.findall(r"\d+(?:\.\d+)?", salary_str)
+        if not numbers:
+            return None, None
+        val = float(numbers[0])
+        return int(val), int(val)
 
 '''
-Pulls job postings from Indeed 
+Scrape jobs from LinkedIn via Apify LinkedIn Jobs actor.
 '''
-def scrape_from_indeed(job_title, soc_code): 
-    MAX_POSTINGS = 300
+def scrape_linkedin_jobs(job_title, location, max_jobs, soc_code):
+    # retrieve apify credentials 
+    with open('utils/apify_credentials.csv', mode='r') as file: 
+        reader = csv.DictReader(file)
+        credentials = next(reader) 
+        API_TOKEN = credentials['API_TOKEN']
+        ACTOR_ID = credentials['ACTOR_ID']
 
-    # scrape job postings 
-    postings = asyncio.run(scrape_jobs(job_title, soc_code, MAX_POSTINGS))
+    client = ApifyClient(token=API_TOKEN)
 
-    postings = pd.DataFrame(postings) 
+    actor_input = {
+        "searchStrings": [job_title],
+        "locations": [location],
+        "maxJobs": max_jobs
+    }
+
+    run = client.actor(ACTOR_ID).call(run_input=actor_input)
+    dataset_id = run["defaultDatasetId"]
+
+    list_page = client.dataset(dataset_id).list_items(limit=max_jobs)
+    items = list_page.items
+
+    jobs_list = []
+    for item in items:
+        salary_min, salary_max = parse_salary(item.get("salary"))
+
+        if isinstance(salary_min, (int, float)) and isinstance(salary_max, (int, float)):
+            avg_salary = (salary_min + salary_max) / 2
+        elif isinstance(salary_min, (int, float)):
+            avg_salary = salary_min
+        elif isinstance(salary_max, (int, float)):
+            avg_salary = salary_max
+        else:
+            avg_salary = 'N/A'
+
+        jobs_list.append({
+            "title": item.get("title"),
+            "company": item.get('companyName'), 
+            "location": item.get("location"),
+            "average_salary": avg_salary, 
+            "description": item.get("description"),
+            "redirect_url": item.get("applyUrl"),
+            "experience_level": item.get("experienceLevel"),
+            "soc_code": soc_code, 
+            "job_category": job_title,
+        })
+
+    return jobs_list
+
+'''
+Pulls job postings from Appify 
+'''
+def scrape_from_apify(job_title, soc_code): 
+    MAX_POSTINGS = 300 
+    LOCATION = 'Pittsburgh, Pennsylvania'
+
+    postings = scrape_linkedin_jobs(job_title, LOCATION, MAX_POSTINGS, soc_code) 
+    postings_df = pd.DataFrame(postings) 
+    postings_df['matched_skills'] = postings_df['description'].apply(extract_skills)
 
     column_headers = ["title", "company", "location", "avg_salary", "description", "redirect_url", "experience_level", "soc_code", "job_category", "matched_skills"]
-    postings = postings.reindex(columns=column_headers)
-    return postings
+    postings_df = postings_df.reindex(columns=column_headers)
+
+    return postings_df
 
 '''
 Retrieves job listings from Adzuna for the given job title and maximum number of results. 
@@ -216,7 +173,7 @@ def jobs_to_dataframe(jobs, soc_code, job_title):
         elif isinstance(salary_max, (int, float)):
             avg_salary = salary_max
         else:
-            avg_salary = None  # Or 0, or skip, depending on your needs
+            avg_salary = 'N/A'
 
         job_dict = {
             'title': job.get('title'), 
@@ -285,7 +242,7 @@ def clear_processed_data():
 Collect all job postings and save to csv files corresponding to BLS soc codes. 
 '''
 def collect_all_job_postings():
-    ALL_JOBS = ['Software Developer', 'Operations', 'QA', 'Cloud Engineer', 'Data Analyst', 'Data Scientist', 'Data Scientist', 'Cybersecurity', 'Network Engineer', 'Data Engineer', 'AI ML', 'IT', 'Technical Product Manager', 'DevOps']
+    ALL_JOBS = ['Software Developer', ' Technical Operations', 'QA', 'Cloud Engineer', 'Data Analyst', 'Data Scientist', 'Data Scientist', 'Cybersecurity', 'Network Engineer', 'Data Engineer', 'AI/ML', 'IT', 'Technical Product Manager', 'DevOps']
     indeed_job_titles = ['Software Developer', 'Operations', 'QA', 'Cloud Engineer', 'Data Analyst', 'Data Scientist', 'Data Scientist', 'Cybersecurity', 'Network Engineer']
     adzuna_job_titles = ['Data Engineer', 'AI/ML', 'IT', 'Technical Product Manager', 'DevOps'] 
 
@@ -295,11 +252,9 @@ def collect_all_job_postings():
         soc_code = match_job_title_to_soc_code(job_title)
         print(f'Found soc code {soc_code} for {job_title}')
 
-        job_listings = scrape_from_adzuna(job_title, soc_code)
-
-        # if job_title in indeed_job_titles: 
-        #     job_listings = scrape_from_indeed(job_title, soc_code)
-        # elif job_title in adzuna_job_titles: 
-        #     job_listings = scrape_from_adzuna(job_title, soc_code)
+        if job_title in indeed_job_titles: 
+            job_listings = scrape_from_apify(job_title, soc_code)
+        elif job_title in adzuna_job_titles: 
+            job_listings = scrape_from_adzuna(job_title, soc_code)
         
         append_to_csv(f"{soc_code}.csv", job_listings, column_headers)

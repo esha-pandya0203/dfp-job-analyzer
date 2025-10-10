@@ -1,23 +1,57 @@
 import pandas as pd
 import ast
 import re 
+import os
 
-# extract and clean skills 
-def extract_skills_from_occupation_data(): 
-    # load data
-    skills_df = pd.read_csv("data/raw_data/occupations_data.csv")
-
-    # extract all unique skills from the technology_skills column
-    all_skills = []
-    for skills in skills_df["technology_skills"].dropna():
+def _parse_technology_skills_column(series):
+    """Parse a pandas Series of technology_skills values into a flat lowercase list."""
+    parsed_skills = []
+    for value in series.dropna():
         try:
-            parsed = ast.literal_eval(skills)  # convert string list to actual list
-            all_skills.extend([s.lower() for s in parsed])
-        except:
+            # If already a list (e.g., after JSON read), keep as-is; else parse from string
+            if isinstance(value, list):
+                items = value
+            else:
+                items = ast.literal_eval(value) if isinstance(value, str) else []
+            for item in items:
+                if isinstance(item, str):
+                    cleaned = item.strip().lower()
+                    if cleaned:
+                        parsed_skills.append(cleaned)
+        except Exception:
+            # Silently skip malformed rows
             continue
+    return parsed_skills
 
-    all_skills = list(set(all_skills))  # unique skills
-    return all_skills 
+# extract and unify skills from multiple sources (O*NET + legacy occupations_data)
+def extract_skills_from_occupation_data(): 
+    onet_csv_path = os.path.join("data", "ONET_Data.csv")
+    legacy_csv_path = os.path.join("data", "raw_data", "occupations_data.csv")
+
+    unified_skills = []
+
+    # Prefer O*NET enhanced data if available
+    if os.path.exists(onet_csv_path):
+        try:
+            onet_df = pd.read_csv(onet_csv_path)
+            if "technology_skills" in onet_df.columns:
+                unified_skills.extend(_parse_technology_skills_column(onet_df["technology_skills"]))
+        except Exception:
+            # If O*NET file is present but unreadable, fall back to legacy data as well
+            pass
+
+    # Also include legacy source if present to augment coverage
+    if os.path.exists(legacy_csv_path):
+        try:
+            legacy_df = pd.read_csv(legacy_csv_path)
+            if "technology_skills" in legacy_df.columns:
+                unified_skills.extend(_parse_technology_skills_column(legacy_df["technology_skills"]))
+        except Exception:
+            pass
+
+    # Deduplicate and return
+    unified_skills = sorted(list(set(unified_skills)))
+    return unified_skills 
 
 # build regex patterns for each skill 
 # add small tolerance for plurals or endings (e.g., s, es, ing) 

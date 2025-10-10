@@ -4,9 +4,10 @@ import matplotlib.pyplot as plt
 import os 
 import plotly.graph_objects as go
 import plotly.express as px
+from wordcloud import WordCloud
 from utils.job_title_mapping import BLS_SOC_MAPPING
 
-def show_overview(job_data, bls_data):
+def show_overview(job_data, bls_data, onet_data=None):
     """Show overview dashboard"""
     st.header("📈 United States Employment Overview")
     
@@ -116,30 +117,172 @@ def show_overview(job_data, bls_data):
 
     #SKILLS 
     if not job_data.empty and 'soc_code' in job_data.columns:
-        category_name = BLS_SOC_MAPPING[job_data['soc_code'].iloc[0]]['soc_title']
-        st.subheader(f"🛠️ Skills Trends for {category_name}")
+        # Get the first valid (non-NaN) SOC code
+        soc_code = job_data['soc_code'].iloc[0]
+        if pd.notna(soc_code) and soc_code in BLS_SOC_MAPPING:
+            category_name = BLS_SOC_MAPPING[soc_code]['soc_title']
+            st.subheader(f"🛠️ Skills Trends for {category_name}")
+        else:
+            st.subheader("🛠️ Skills Trends for Computer Occupations")
     else:
         st.subheader("🛠️ Skills Trends for Computer Occupations")
         
+    # Priority: Use ONet technical skills if available, otherwise fall back to job data
     all_skills = []
-    for skills in job_data['matched_skills']:
-        all_skills.extend(skills)
+    
+    if onet_data is not None and not onet_data.empty:
+        # Extract technical skills from ONet data
+        num_occupations = len(onet_data)
+        st.info(f"📊 Using O*NET Technical Skills Data from {num_occupations} occupations. Each skill is counted by how many occupations require it (max = {num_occupations}).")
+        
+        # Debug: Show ONet data info
+        
+        # Look for technical skills in ONet data
+        for _, row in onet_data.iterrows():
+            # Check if row has technical skills data
+            if 'technology_skills' in row and pd.notna(row['technology_skills']):
+                skills_str = str(row['technology_skills'])
+                
+                try:
+                    # Parse technical skills (assuming it's stored as a string representation of a list)
+                    import ast
+                    
+                    # Clean the string - remove extra quotes if present
+                    cleaned_str = skills_str.strip()
+                    if cleaned_str.startswith('"') and cleaned_str.endswith('"'):
+                        cleaned_str = cleaned_str[1:-1]
+                    
+                    skills = ast.literal_eval(cleaned_str)
+                    if isinstance(skills, list):
+                        skill_list = [skill.strip() for skill in skills if skill.strip()]
+                        all_skills.extend(skill_list)
+                except Exception as e:
+                    # If parsing fails, try extracting skills using regex
+                    import re
+                    # Extract quoted strings from the skills string
+                    skill_matches = re.findall(r"'([^']+)'", skills_str)
+                    if skill_matches:
+                        all_skills.extend([skill.strip() for skill in skill_matches if skill.strip()])
+                    else:
+                        # Fallback to simple comma splitting
+                        skills = [skill.strip() for skill in skills_str.split(',') if skill.strip()]
+                        all_skills.extend(skills)
+    else:
+        # Fall back to job posting skills
+        st.info("📊 Using Job Posting Skills Data")
+        if not job_data.empty and 'matched_skills' in job_data.columns:
+            for skills in job_data['matched_skills']:
+                if isinstance(skills, list):
+                    all_skills.extend(skills)
     
     if all_skills:
-        skill_counts = pd.Series(all_skills).value_counts().head(10)
-        fig = px.bar(
-            x=skill_counts.values,
-            y=skill_counts.index,
-            orientation='h',
-            title="Top Skills in Computer Occupations",
-            labels={'x': 'Frequency', 'y': 'Skills'}
-        )
-        fig.update_layout(
-            yaxis={'categoryorder':'total ascending'},
-            xaxis_title="Frequency",
-            yaxis_title="Skills"
-        )
-        st.plotly_chart(fig, use_container_width=True)
+        skill_counts = pd.Series(all_skills).value_counts().head(15)
+        
+        # Create two columns for side-by-side visualization
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            # Original bar chart
+            fig_bar = px.bar(
+                x=skill_counts.values,
+                y=skill_counts.index,
+                orientation='h',
+                title="Top Skills by Number of Occupations Requiring Them",
+                labels={'x': 'Number of Occupations', 'y': 'Skills'},
+                color=skill_counts.values,
+                color_continuous_scale='Blues'
+            )
+            fig_bar.update_layout(
+                yaxis={'categoryorder':'total ascending'},
+                xaxis_title="Number of Occupations",
+                yaxis_title="Skills",
+                height=500
+            )
+            st.plotly_chart(fig_bar, use_container_width=True)
+        
+        with col2:
+            # Word Cloud
+            st.write("**Skills Word Cloud**")
+            
+            # Get top 15 most frequent skills to avoid overcrowding
+            top_skills = skill_counts.head(15)
+            
+            # Create word cloud
+            try:
+                from wordcloud import WordCloud
+                import random
+                
+                # Prepare word cloud data - dictionary of skill names and frequencies
+                wordcloud_data = dict(top_skills)
+                
+                # Define color function - use different hues but maintain same saturation and brightness
+                def color_func(word, font_size, position, orientation, random_state=None, **kwargs):
+                    # Define multiple colors with similar brightness levels
+                    colors = [
+                        'rgb(46, 134, 171)',   # Blue
+                        'rgb(171, 46, 134)',   # Magenta
+                        'rgb(134, 171, 46)',   # Yellow-green
+                        'rgb(171, 134, 46)',   # Orange-yellow
+                        'rgb(46, 171, 134)',   # Cyan-green
+                        'rgb(134, 46, 171)',   # Purple
+                        'rgb(171, 86, 46)',    # Orange
+                        'rgb(46, 86, 171)',    # Dark blue
+                        'rgb(86, 171, 46)',    # Green
+                        'rgb(171, 46, 86)',    # Dark red
+                        'rgb(46, 171, 86)',    # Jade green
+                        'rgb(86, 46, 171)',    # Dark purple
+                        'rgb(171, 134, 86)',   # Brown-yellow
+                        'rgb(86, 171, 134)',   # Turquoise
+                        'rgb(134, 86, 171)',   # Light purple
+                    ]
+                    # Select color based on word hash to ensure consistent colors for same word
+                    return colors[hash(word) % len(colors)]
+                
+                # Create word cloud object
+                wordcloud = WordCloud(
+                    width=800,
+                    height=400,
+                    background_color='white',
+                    max_words=15,
+                    relative_scaling=0.5,
+                    random_state=42,
+                    color_func=color_func  # Use custom color function
+                ).generate_from_frequencies(wordcloud_data)
+                
+                # Display word cloud
+                fig, ax = plt.subplots(figsize=(10, 5))
+                ax.imshow(wordcloud, interpolation='bilinear')
+                ax.axis('off')
+                ax.set_title('Skills Word Cloud (Size = Frequency)', fontsize=16, pad=20)
+                
+                st.pyplot(fig)
+                plt.close(fig)
+                
+            except ImportError:
+                st.error("WordCloud library not installed. Please install it with: pip install wordcloud")
+                
+                # Fallback: display skills list
+                st.write("**Top Skills by Frequency:**")
+                for i, (skill, freq) in enumerate(top_skills.items(), 1):
+                    # Calculate font size based on frequency
+                    font_size = min(24, max(12, int(12 + (freq / top_skills.max()) * 12)))
+                    st.markdown(f"<span style='font-size:{font_size}px; margin:5px;'>{skill} ({freq})</span>", 
+                               unsafe_allow_html=True)
+        
+        # Add summary statistics
+        st.subheader("📊 Skills Summary")
+        col3, col4, col5 = st.columns(3)
+        
+        with col3:
+            st.metric("Total Unique Skills", len(pd.Series(all_skills).value_counts()))
+        
+        with col4:
+            st.metric("Most Frequent Skill", skill_counts.index[0], f"{skill_counts.values[0]} times")
+        
+        with col5:
+            avg_frequency = skill_counts.mean()
+            st.metric("Average Frequency", f"{avg_frequency:.1f}")
+            
     else:
         st.info("No skills data available")
     
