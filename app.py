@@ -41,27 +41,34 @@ def main():
     # scrape all data on start-up, only occurs once per session 
     if 'startup_done' not in st.session_state:
         st.session_state.startup_done = True
-        with st.spinner("⏳ Collecting data. This may take up to 10 minutes. Please be patient..."):
-            clear_processed_data() 
-            collect_all_job_postings() 
-            try:
-                with open('data/api-bls.csv', 'r', newline='') as csvfile:
-                    reader = csv.reader(csvfile)
-                    row = next(reader)  # Get the API KEY for bls 
-                    api_key = row[1]
-            except FileNotFoundError:
-                print("Error: 'api-bls.csv' not found.")
+        st.info("Would you like to use previously scraped data or download new job data?")
+        user_choice = st.radio(
+            "Choose data source:", 
+            ("Use cached data (faster)", "Download new data (takes up to 15 minutes)")
+        )
 
-            # make API requests to BLS api endpoint and scrape BLS webpage for data
-            fetch_bls_data(api_key)
-            web_scrape_bls_employment_projections()
-            # scrape pdf for pittsburgh specific outlook data
-            pittsburgh_computer_wage_outlook()
-            
-            # collect O*NET data - use incremental update
-            scraper = EnhancedONETScraper()
-            scraper.run_incremental_update()
-            scraper.cleanup_temp_files()
+        if user_choice == 'Download new data (takes up to 10 minutes)':
+            with st.spinner("⏳ Collecting data. This may take up to 10 minutes. Please be patient..."):
+                clear_processed_data() 
+                collect_all_job_postings() 
+                try:
+                    with open('data/api-bls.csv', 'r', newline='') as csvfile:
+                        reader = csv.reader(csvfile)
+                        row = next(reader)  # Get the API KEY for bls 
+                        api_key = row[1]
+                except FileNotFoundError:
+                    print("Error: 'api-bls.csv' not found.")
+
+                # make API requests to BLS api endpoint and scrape BLS webpage for data
+                fetch_bls_data(api_key)
+                web_scrape_bls_employment_projections()
+                # scrape pdf for pittsburgh specific outlook data
+                pittsburgh_computer_wage_outlook()
+                
+                # collect O*NET data - use incremental update
+                scraper = EnhancedONETScraper()
+                scraper.run_incremental_update()
+                scraper.cleanup_temp_files()
 
     # load all the data: job listings, pittsburgh wage and bls data
     job_data = load_job_data()

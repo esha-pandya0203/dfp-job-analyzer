@@ -46,7 +46,7 @@ BLS_SOC_MAPPING = {
     # Software Quality Assurance Analysts and Testers
     "15-1253": {
         "soc_title": "Software Quality Assurance Analysts and Testers",
-        "job_titles": ['Operations', 'General Manager', 'Project Coordinator', 
+        "job_titles": ['Technical Operations', 'Operations', 'General Manager', 'Project Coordinator', 
                        'Administrative Business Partner', 'Logistics', 'Customer Experience Specialist', 
                        'Brand Manager', 'Plant Manager', 'Demand Planner', 
                        'Workforce Management', 'Operational', 'Supply Chain', 'Coordinator', 

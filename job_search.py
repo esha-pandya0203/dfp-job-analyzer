@@ -93,7 +93,9 @@ def display_search_results(search_results, search_input, pa_wage_data):
                 with col1:
                     st.write(f"**Company:** {job['company']}")
                     st.write(f"**Location:** {job['location']}")
-                    st.write(f"**Average Salary:** ${job['avg_salary']}")
+
+                    if 'avg_salary' in job and not pd.isna(job['avg_salary']):
+                       st.write(f"**Average Salary:** ${job['avg_salary']}")
                     
                     if 'experience_level' in job and not pd.isna(job['experience_level']):
                         st.write(f"**Experience Level:** {job['experience_level']}")

@@ -67,9 +67,9 @@ def scrape_linkedin_jobs(job_title, location, max_jobs, soc_code):
     client = ApifyClient(token=API_TOKEN)
 
     actor_input = {
-        "searchStrings": [job_title],
-        "locations": [location],
-        "maxJobs": max_jobs
+        "title": job_title,
+        "location": location,
+        "limit": max_jobs
     }
 
     run = client.actor(ACTOR_ID).call(run_input=actor_input)
@@ -80,22 +80,11 @@ def scrape_linkedin_jobs(job_title, location, max_jobs, soc_code):
 
     jobs_list = []
     for item in items:
-        salary_min, salary_max = parse_salary(item.get("salary"))
-
-        if isinstance(salary_min, (int, float)) and isinstance(salary_max, (int, float)):
-            avg_salary = (salary_min + salary_max) / 2
-        elif isinstance(salary_min, (int, float)):
-            avg_salary = salary_min
-        elif isinstance(salary_max, (int, float)):
-            avg_salary = salary_max
-        else:
-            avg_salary = 'N/A'
-
         jobs_list.append({
             "title": item.get("title"),
             "company": item.get('companyName'), 
             "location": item.get("location"),
-            "average_salary": avg_salary, 
+            "average_salary": 'N/A', 
             "description": item.get("description"),
             "redirect_url": item.get("applyUrl"),
             "experience_level": item.get("experienceLevel"),
@@ -110,7 +99,7 @@ Pulls job postings from Appify
 '''
 def scrape_from_apify(job_title, soc_code): 
     MAX_POSTINGS = 300 
-    LOCATION = 'Pittsburgh, Pennsylvania'
+    LOCATION = 'Pittsburgh'
 
     postings = scrape_linkedin_jobs(job_title, LOCATION, MAX_POSTINGS, soc_code) 
     postings_df = pd.DataFrame(postings) 
@@ -262,9 +251,9 @@ def clear_processed_data():
 Collect all job postings and save to csv files corresponding to BLS soc codes. 
 '''
 def collect_all_job_postings():
-    ALL_JOBS = ['Software Developer', ' Technical Operations', 'QA', 'Cloud Engineer', 'Data Analyst', 'Data Scientist', 'Data Scientist', 'Cybersecurity', 'Network Engineer', 'Data Engineer', 'AI/ML', 'IT', 'Technical Product Manager', 'DevOps']
-    indeed_job_titles = ['Software Developer', 'Operations', 'QA', 'Cloud Engineer', 'Data Analyst', 'Data Scientist', 'Data Scientist', 'Cybersecurity', 'Network Engineer']
-    adzuna_job_titles = ['Data Engineer', 'AI/ML', 'IT', 'Technical Product Manager', 'DevOps'] 
+    ALL_JOBS = ['Software Developer', 'Technical Operations', 'QA', 'Cloud Engineer', 'Data Analyst', 'Data Scientist', 'Data Scientist', 'Cybersecurity', 'Network Engineer', 'Data Engineer', 'AI/ML', 'IT', 'Technical Product Manager', 'DevOps']
+    indeed_job_titles = ['Software Developer', 'Technical Operations', 'QA', 'Cloud Engineer', 'Data Analyst', 'Data Scientist']
+    adzuna_job_titles = ['Cybersecurity', 'Network Engineer', 'Data Engineer', 'AI/ML', 'IT', 'Technical Product Manager', 'DevOps'] 
 
     column_headers = ["title", "company", "location", "avg_salary", "description", "redirect_url", "experience_level", "soc_code", "job_category", "matched_skills"] 
 
@@ -276,5 +265,6 @@ def collect_all_job_postings():
             job_listings = scrape_from_apify(job_title, soc_code)
         elif job_title in adzuna_job_titles: 
             job_listings = scrape_from_adzuna(job_title, soc_code)
+            print('skipping adzuna scraping')
         
         append_to_csv(f"{soc_code}.csv", job_listings, column_headers)
