@@ -1,3 +1,23 @@
+"""
+------------------------------------------------------------
+File: data_loader.py
+Team: Orange Team
+Members: 
+    - Jiatong Li (jiatong4)
+    - Esha Pandya (epandya)
+    - Fan Yang (fy4)
+    - Sumreen Fathima (sumreenf)
+
+Description:
+    Code to load the data collected into dataframes
+
+Imports:
+    - Imports from: pandas, streamlit, os, re, ast
+    - Imported by: app.py
+------------------------------------------------------------
+"""
+
+
 import pandas as pd 
 import streamlit as st 
 import os
@@ -16,6 +36,7 @@ def load_prcoessed_job_data(soc_code):
 def load_bls_data():
     """Load BLS data files"""
     data_folder = "data/raw_data"
+    # Map csv saved from api requests/web-scraping to their context
     bls_files = {
         'employment_level': 'LNS12000000.csv',
         'unemployment_level': 'LNS13000000.csv',
@@ -24,6 +45,8 @@ def load_bls_data():
     }
     
     bls_data = {}
+
+    # For each csv file, save data as dataframes
     for key, filename in bls_files.items():
         filepath = os.path.join(data_folder, filename)
         if os.path.exists(filepath):
@@ -51,12 +74,10 @@ def load_bls_data():
 
 
 @st.cache_data
-def load_pittsburgh_data(bls_dict, wage_filename="pittsburgh_computer_wage_outlook.csv", 
-                            outlook_filename="pittsburgh_computer_occupation_outlook.csv"):
-    """Load and clean BLS wage data and map SOC codes to keyword categories"""
+def load_pittsburgh_data(bls_dict, wage_filename="pittsburgh_computer_wage_outlook.csv"):
+    """Load and clean BLS Pittsburgh wage data and map SOC codes to keyword categories"""
     data_folder = "data/raw_data"
     wage_filepath = os.path.join(data_folder, wage_filename)
-    outlook_filepath = os.path.join(data_folder, outlook_filename)
     
     if not os.path.exists(wage_filepath):
         st.warning(f"⚠️ File not found: {wage_filepath}")
@@ -64,11 +85,11 @@ def load_pittsburgh_data(bls_dict, wage_filename="pittsburgh_computer_wage_outlo
     
     try:
         wage_rows = []
-    
+        #extract wage data
         with open(wage_filepath, 'r', encoding='utf-8') as f:
             for line in f:
                 line = line.strip()
-                if not line or line.startswith("Average"):  # skip header lines
+                if not line or line.startswith("Average"):  
                     continue
                 line = line.strip('"')
                 
@@ -77,7 +98,7 @@ def load_pittsburgh_data(bls_dict, wage_filename="pittsburgh_computer_wage_outlo
                 if len(wages) < 3:
                     continue  # skip incomplete lines
                 
-                # Last 3 numeric fields are the ones we care about
+                # Last 3 numeric fields contain wage information we care about
                 median_annual = float(wages[-5].replace(',', ''))
                 avg_annual = float(wages[-6].replace(',', ''))
                 avg_hourly = float(wages[-7].replace(',', ''))
@@ -85,11 +106,12 @@ def load_pittsburgh_data(bls_dict, wage_filename="pittsburgh_computer_wage_outlo
                 # SOC code is the first field
                 soc = line.split()[0]
 
+                # filter for soc_codes associated with computer occupations
                 if soc not in bls_dict:
                     continue
                 
-                # Title is everything between SOC and numeric wages
                 title = line[len(soc):].strip()  # remove SOC
+
                 # Remove wage numbers from title
                 for w in wages:
                     title = title.replace(w, '')
@@ -97,6 +119,7 @@ def load_pittsburgh_data(bls_dict, wage_filename="pittsburgh_computer_wage_outlo
                 
                 wage_rows.append([soc, title, avg_hourly, avg_annual, median_annual])
         
+        #creates a dataframe mapping soc_code to wage stats in pittsburgh
         df_wages = pd.DataFrame(wage_rows, columns=['soc', 'title', 'average_hourly_wage', 'average_annual_wage', 'median_annual_wage'])
         
         return df_wages

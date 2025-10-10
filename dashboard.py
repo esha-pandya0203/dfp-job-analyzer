@@ -1,3 +1,23 @@
+"""
+------------------------------------------------------------
+File: dashboard.py
+Team: Orange Team
+Members: 
+    - Jiatong Li (jiatong4)
+    - Esha Pandya (epandya)
+    - Fan Yang (fy4)
+    - Sumreen Fathima (sumreenf)
+
+Description:
+    Code for the dashboard tab of the application, displays charts and graphs with
+    the data we collected
+
+Imports:
+    - Imports from: streamlit, pandas, matplotlib, os, plotly, wordcloud, utils
+    - Imported by: app.py
+------------------------------------------------------------
+"""
+
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -7,8 +27,11 @@ import plotly.express as px
 from wordcloud import WordCloud
 from utils.job_title_mapping import BLS_SOC_MAPPING
 
+# main function that generates all visualizations on dashboard
 def show_overview(job_data, bls_data, onet_data=None):
     """Show overview dashboard"""
+
+    # 1. Employment vs Unemployment Graph
     st.header("📈 United States Employment Overview")
     
     if 'employment_level' in bls_data and 'unemployment_level' in bls_data:
@@ -44,7 +67,8 @@ def show_overview(job_data, bls_data, onet_data=None):
     else:
         st.error("Missing employment or unemployment data files.")
 
-    # Load projections dataset
+    # 2. Tech Employment Projections Bar Chart
+    # Load tech employment projections dataset
     projections_path = os.path.join("data/raw_data", "employment_projections_tech.csv")
     if os.path.exists(projections_path):
         print("employment projects")
@@ -61,9 +85,10 @@ def show_overview(job_data, bls_data, onet_data=None):
         ]
         df_proj = projections_df[cols].copy()
 
-        # Option to choose which metric to visualize
+        
         st.subheader("💼 Tech Employment Projections (2024 vs. 2034)")
 
+        # Option to choose which metric to visualize
         metric = st.radio(
             "Select Comparison Metric:",
             options=[
@@ -115,7 +140,7 @@ def show_overview(job_data, bls_data, onet_data=None):
     else:
         st.warning("Projections file not found: employment_projections_tech.csv")
 
-    #SKILLS 
+    # 3. Skills Trends
     if not job_data.empty and 'soc_code' in job_data.columns:
         # Get the first valid (non-NaN) SOC code
         soc_code = job_data['soc_code'].iloc[0]

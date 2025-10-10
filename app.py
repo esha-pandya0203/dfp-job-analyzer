@@ -1,3 +1,22 @@
+"""
+------------------------------------------------------------
+File: app.py
+Team: Orange Team
+Members: 
+    - Jiatong Li (jiatong4)
+    - Esha Pandya (epandya)
+    - Fan Yang (fy4)
+    - Sumreen Fathima (sumreenf)
+
+Description:
+    Main file for the project, compiles the other functions to scrape, load, and display cleaned data 
+
+Imports:
+    - Imports from: utils and data folder, streamlit, pandas, os, csv 
+    - Imported by: none
+------------------------------------------------------------
+"""
+
 import streamlit as st 
 from utils.bls_data_scraper import fetch_bls_data, web_scrape_bls_employment_projections, pittsburgh_computer_wage_outlook
 from utils.data_loader import load_bls_data, load_pittsburgh_data, load_job_data
@@ -29,12 +48,15 @@ def main():
             try:
                 with open('data/api-bls.csv', 'r', newline='') as csvfile:
                     reader = csv.reader(csvfile)
-                    row = next(reader)  # Get the first and only row
+                    row = next(reader)  # Get the API KEY for bls 
                     api_key = row[1]
             except FileNotFoundError:
                 print("Error: 'api-bls.csv' not found.")
+
+            # Make API requests to BLS api endpoint and scrape BLS webpage for data
             fetch_bls_data(api_key)
             web_scrape_bls_employment_projections()
+            # Scrape pdf for pittsburgh specific outlook data
             pittsburgh_computer_wage_outlook()
             
             # Collect O*NET data - use incremental update
@@ -42,7 +64,7 @@ def main():
             scraper.run_incremental_update()
             scraper.cleanup_temp_files()
 
-    
+    # Load all the data: job listings, pittsburgh wage and bls data
     job_data = load_job_data()
     pa_wage_data = load_pittsburgh_data(bls_dict=bls_dict) 
     bls_data = load_bls_data()
@@ -59,7 +81,7 @@ def main():
         onet_data = pd.read_csv(root_csv)
         print(f"✅ Loaded O*NET data from root directory: {len(onet_data)} occupations")
 
-    # set up navigation 
+    # set up navigation on application interface
     if page == "Dashboard":
         dashboard.show_overview(job_data, bls_data, onet_data)
     elif page == "Job Search":
